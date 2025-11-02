@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/* Volle Höhe, damit min-h-screen wirkt */
+html, body, #app { height: 100%; }
+
+/* Custom game theme colors */
+@theme {
+    /* Standard blue colors */
+    --color-blue-50:  #eff6ff;
+    --color-blue-100: #dbeafe;
+    --color-blue-200: #bfdbfe;
+    --color-blue-300: #93c5fd;
+    --color-blue-400: #60a5fa;
+    --color-blue-500: #3b82f6;
+    --color-blue-600: #2563eb;
+    --color-blue-700: #1d4ed8;
+    --color-blue-800: #1e40af;
+    --color-blue-900: #1e3a8a;
+
+    /* Game theme colors */
+    --color-game-dark: #0f172a;
+    --color-game-cyan: #06b6d4;
+    --color-game-blue: #3b82f6;
+    --color-game-purple: #8b5cf6;
+    --color-game-pink: #ec4899;
+
+    /* Container mit größerer max-width */
+    --container-2xl: 1920px;
+}
