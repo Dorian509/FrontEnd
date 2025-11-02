@@ -10,14 +10,12 @@
 ## Inhaltsverzeichnis
 
 - [Features](#-features)
-- [Tech Stack](#-tech-stack)
 - [Quick Start](#-quick-start)
 - [Installation](#-installation)
 - [Development](#-development)
 - [Projekt-Struktur](#-projekt-struktur)
 - [API Endpoints](#-api-endpoints)
 - [Deployment](#-deployment)
-- [Contributing](#-contributing)
 
 ## Features
 
