@@ -1,4 +1,4 @@
-# 💧 HydrateMate - Gaming Edition
+# HydrateMate - Gaming Edition
 
 > Dein persönlicher Trink-Tracker im Gaming-Design
 
@@ -7,7 +7,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-## 📋 Inhaltsverzeichnis
+## Inhaltsverzeichnis
 
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
@@ -19,9 +19,9 @@
 - [Deployment](#-deployment)
 - [Contributing](#-contributing)
 
-## ✨ Features
+## Features
 
-### 🎮 Dual-Mode System
+### Dual-Mode System
 
 #### Gast-Modus
 - ✅ Sofortiger Zugriff ohne Registrierung
@@ -37,43 +37,41 @@
 - ✅ Cloud-Backup der Daten
 - ✅ Account-Management
 
-### 🎯 Hauptfunktionen
+### Hauptfunktionen
 
-#### 📊 Dashboard
+#### Dashboard
 - **Tagesfortschritt**: Visueller Progress-Bar mit Prozentanzeige
 - **Quick-Add Buttons**: Schnelles Hinzufügen (50ml / 100ml / 250ml)
 - **Heute getrunken**: Chronologische Liste aller heutigen Einträge
 - **Streak-Tracking**: Aktuelle und längste Serie
 - **Profil-Übersicht**: Gewicht, Aktivität, Ziel
 
-#### 📈 Statistiken
+#### Statistiken
 - **7-Tage Chart**: Visualisierung mit Chart.js
 - **Durchschnittswerte**: Konsum und Zielerreichung
 - **Erfolgsrate**: Prozentsatz erreichter Tage
 - **Gesamt-Statistiken**: Lifetime Tracking
 
-#### 📜 Verlauf
+#### Verlauf
 - **Chronologische Übersicht**: Alle Einträge sortiert
 - **Gruppierung nach Datum**: "Heute", "Gestern", Wochentag
 - **Detailansicht**: Uhrzeit, Quelle, Menge
 - **Löschen-Funktion**: Einzelne Einträge entfernen
 
-#### ⚙️ Einstellungen
+#### Einstellungen
 - **Profil-Anpassung**: Gewicht (30-200kg Slider)
 - **Aktivitätslevel**: Niedrig / Mittel (+250ml) / Hoch (+500ml)
 - **Klimabedingungen**: Normal / Heiß (+500ml)
 - **Ziel-Berechnung**: Automatisch basierend auf Profil
 - **Formel**: `Gewicht × 35ml + Aktivität + Klima`
 
-### 🎨 UI/UX Features
+### UI/UX Features
 - **Gaming-Design**: Dunkles Theme mit Neon-Akzenten
 - **Responsive**: Mobile-first Design
 - **Animationen**: Smooth Transitions und Hover-Effekte
 - **Toast-Notifications**: Erfolgs- und Error-Meldungen
 - **Loading States**: Spinner und Skeleton-Screens
 - **Font Awesome Icons**: 500+ Icons
-
-## 🛠️ Tech Stack
 
 ### Frontend
 - **Framework**: Vue 3.5 (Composition API)
@@ -100,7 +98,7 @@
 - **Type Checking**: TypeScript Compiler
 - **Development**: Hot Module Replacement (HMR)
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # 1. Repository klonen
@@ -121,7 +119,7 @@ npm start
 # Backend:  http://localhost:3000
 ```
 
-## 📦 Installation
+## Installation
 
 ### Voraussetzungen
 - Node.js >= 20.x
@@ -172,7 +170,7 @@ Die App nutzt eine Render PostgreSQL Cloud-Datenbank:
 DATABASE_URL=postgresql://user:password@host:5432/database
 ```
 
-## 💻 Development
+## Development
 
 ### Available Scripts
 
@@ -228,7 +226,7 @@ npm run dev
 http://localhost:5173
 ```
 
-## 📁 Projekt-Struktur
+## Projekt-Struktur
 
 ```
 Frontend/
@@ -281,7 +279,7 @@ Backend/
 └── package.json             # Dependencies
 ```
 
-## 🌐 API Endpoints
+## API Endpoints
 
 ### Authentication
 
@@ -332,7 +330,7 @@ GET    /api/statistics/:userId/last-7-days    # 7-Tage Stats
 POST   /api/migrate-guest-data              # Gast-Daten migrieren
 ```
 
-## 🚢 Deployment
+## Deployment
 
 ### Frontend (Vercel/Netlify)
 
@@ -374,7 +372,7 @@ vercel --prod
 DATABASE_URL=postgresql://user:pass@host:5432/db
 ```
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Type Check
@@ -390,7 +388,7 @@ npm run lint
 npm run dev
 ```
 
-## 🎨 Customization
+## Customization
 
 ### Farben anpassen (`src/assets/base.css`)
 
@@ -414,7 +412,7 @@ export const DEFAULTS = {
 }
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions sind willkommen! Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für Details.
 
@@ -435,26 +433,19 @@ Contributions sind willkommen! Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für Det
 - JSDoc Kommentare für alle Funktionen
 - Component Dokumentation
 
-## 📝 License
+## Credits
 
-MIT License
-
-Copyright (c) 2024 Dorian Gutsche
-
-## 🙏 Credits
-
-- **Design**: Inspiriert von Gaming Dashboards
 - **Icons**: [Font Awesome](https://fontawesome.com)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com)
 - **Charts**: [Chart.js](https://www.chartjs.org)
 - **Framework**: [Vue.js](https://vuejs.org)
 
-## 📧 Support
+## Support
 
 - **Issues**: [GitHub Issues](https://github.com/yourusername/hydratemate/issues)
 - **Documentation**: [Wiki](https://github.com/yourusername/hydratemate/wiki)
 
-## 🗺️ Roadmap
+## Roadmap
 
 ### Version 1.1
 - [ ] PWA Support (Offline-Modus)
@@ -468,14 +459,5 @@ Copyright (c) 2024 Dorian Gutsche
 - [ ] Wochenberichte via Email
 - [ ] Mobile App (React Native)
 
-### Version 2.0
-- [ ] Medikamenten-Tracking
-- [ ] Ernährungs-Integration
-- [ ] Fitness-Tracker Integration
-- [ ] KI-basierte Empfehlungen
-
 ---
 
-**Made with 💧 and ☕ by Dorian Gutsche**
-
-⭐ **Star** das Projekt wenn es dir gefällt!
