@@ -1,6 +1,6 @@
-# HydrateMate - Gaming Edition
+# HydrateMate
 
-> Dein persönlicher Trink-Tracker im Gaming-Design
+> Dein persönlicher Trink-Tracker 
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![Vue](https://img.shields.io/badge/Vue-3.5-42b883)
