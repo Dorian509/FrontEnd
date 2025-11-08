@@ -457,5 +457,5 @@ Contributions sind willkommen! Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für Det
 - [ ] Wochenberichte via Email
 - [ ] Mobile App (React Native)
 
----
+
 
