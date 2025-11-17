@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { apiUrl } from '@/utils/api'
 
 const router = useRouter()
 const { user, isGuest, getAuthHeaders } = useAuth()
@@ -81,7 +82,7 @@ async function loadHistory() {
       }
     } else {
       // Lade von API
-      const res = await fetch(`/api/intakes/${user.value?.id}/history`, {
+      const res = await fetch(apiUrl(`/api/intakes/${user.value?.id}/history`), {
         headers: getAuthHeaders()
       })
 
@@ -137,7 +138,7 @@ async function deleteEntry(entry: IntakeEntry) {
       localStorage.setItem('guestHistory', JSON.stringify(history.value))
     } else {
       // API Call
-      const res = await fetch(`/api/intakes/${entry.id}`, {
+      const res = await fetch(apiUrl(`/api/intakes/${entry.id}`), {
         method: 'DELETE',
         headers: getAuthHeaders()
       })

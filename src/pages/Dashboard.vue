@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { apiUrl } from '@/utils/api'
 import GuestBanner from '@/components/GuestBanner.vue'
 
 const router = useRouter()
@@ -86,7 +87,7 @@ async function load() {
       }
     } else {
       // Load from API for authenticated user
-      const res = await fetch(`/api/hydration/today/${user.value?.id || userId.value}`, {
+      const res = await fetch(apiUrl(`/api/hydration/today/${user.value?.id || userId.value}`), {
         headers: getAuthHeaders()
       })
       if (!res.ok) throw new Error('HTTP ' + res.status)
@@ -106,7 +107,7 @@ async function loadSilently() {
       return
     }
 
-    const res = await fetch(`/api/hydration/today/${user.value?.id || userId.value}`, {
+    const res = await fetch(apiUrl(`/api/hydration/today/${user.value?.id || userId.value}`), {
       headers: getAuthHeaders()
     })
     if (!res.ok) throw new Error('HTTP ' + res.status)
@@ -159,7 +160,7 @@ async function loadProfile() {
       return
     }
 
-    const res = await fetch(`/api/profile/${user.value?.id || userId.value}`, {
+    const res = await fetch(apiUrl(`/api/profile/${user.value?.id || userId.value}`), {
       headers: getAuthHeaders()
     })
     if (!res.ok) throw new Error('HTTP ' + res.status)
@@ -231,7 +232,7 @@ async function addIntake(ml: number, source: Source | null = null) {
       updateGuestStats(ml)
     } else {
       // 4b. USER MODE: API Call im Hintergrund (ohne loading state!)
-      const res = await fetch('/api/intakes', {
+      const res = await fetch(apiUrl('/api/intakes'), {
         method: 'POST',
         headers: {
           ...getAuthHeaders(),

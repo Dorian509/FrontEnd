@@ -4,6 +4,7 @@
  */
 
 import type { ActivityLevel, Climate, Source, SourceConfig } from '@/types'
+import { apiUrl } from '@/utils/api'
 
 // ============================================================================
 // Source Configuration
@@ -104,33 +105,34 @@ export const STORAGE_KEYS = {
 
 /**
  * API Endpoint Pfade
+ * Nutzt apiUrl() für automatische URL-Konstruktion (Development vs Production)
  */
 export const API_ENDPOINTS = {
   // Authentication
   AUTH: {
-    LOGIN: '/api/auth/login',
-    REGISTER: '/api/auth/register',
-    ME: '/api/auth/me'
+    LOGIN: apiUrl('/api/auth/login'),
+    REGISTER: apiUrl('/api/auth/register'),
+    ME: apiUrl('/api/auth/me')
   },
 
   // Profile
-  PROFILE: (userId: number) => `/api/profile/${userId}`,
+  PROFILE: (userId: number) => apiUrl(`/api/profile/${userId}`),
 
   // Hydration
   HYDRATION: {
-    TODAY: (userId: number) => `/api/hydration/today/${userId}`,
-    STATS: (userId: number) => `/api/statistics/${userId}/last-7-days`
+    TODAY: (userId: number) => apiUrl(`/api/hydration/today/${userId}`),
+    STATS: (userId: number) => apiUrl(`/api/statistics/${userId}/last-7-days`)
   },
 
   // Intakes
   INTAKES: {
-    CREATE: '/api/intakes',
-    HISTORY: (userId: number) => `/api/intakes/${userId}/history`,
-    DELETE: (intakeId: number) => `/api/intakes/${intakeId}`
+    CREATE: apiUrl('/api/intakes'),
+    HISTORY: (userId: number) => apiUrl(`/api/intakes/${userId}/history`),
+    DELETE: (intakeId: number) => apiUrl(`/api/intakes/${intakeId}`)
   },
 
   // Migration
-  MIGRATE: '/api/migrate-guest-data'
+  MIGRATE: apiUrl('/api/migrate-guest-data')
 } as const
 
 // ============================================================================

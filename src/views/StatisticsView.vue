@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { apiUrl } from '@/utils/api'
 
 const router = useRouter()
 const { user, isGuest, getAuthHeaders } = useAuth()
@@ -55,7 +56,7 @@ async function loadStats() {
       }
     } else {
       // Lade von API
-      const res = await fetch(`/api/statistics/${user.value?.id}/last-7-days`, {
+      const res = await fetch(apiUrl(`/api/statistics/${user.value?.id}/last-7-days`), {
         headers: getAuthHeaders()
       })
 
