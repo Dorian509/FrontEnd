@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { apiUrl } from '@/utils/api'
 
 const router = useRouter()
 const { user, isGuest, logout, getAuthHeaders } = useAuth()
@@ -53,7 +54,7 @@ async function loadProfile() {
       }
     } else {
       // Lade von API für authentifizierte User
-      const res = await fetch(`/api/profile/${user.value?.id || userId.value}`, {
+      const res = await fetch(apiUrl(`/api/profile/${user.value?.id || userId.value}`), {
         headers: getAuthHeaders()
       })
       if (!res.ok) throw new Error('HTTP ' + res.status)
@@ -127,7 +128,7 @@ async function saveProfile() {
       }
       console.log('📤 Sending to API:', body)
 
-      const res = await fetch(`/api/profile/${user.value?.id}`, {
+      const res = await fetch(apiUrl(`/api/profile/${user.value?.id}`), {
         method: 'PUT',
         headers: {
           ...getAuthHeaders(),

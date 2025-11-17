@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { GuestDataExport } from '@/types/guest'
+import { apiUrl } from '@/utils/api'
 
 interface User {
   id: number
@@ -69,7 +70,7 @@ export function useAuth() {
     try {
       console.log('🔐 Attempting login...', credentials.email)
 
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
@@ -144,7 +145,7 @@ export function useAuth() {
       const guestData = collectGuestData()
 
       // 2. Registriere User
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(apiUrl('/api/auth/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -286,7 +287,7 @@ export function useAuth() {
   // Migrate Guest Data to Backend
   async function migrateGuestDataToBackend(authToken: string, guestData: GuestDataExport): Promise<boolean> {
     try {
-      const res = await fetch('/api/migrate-guest-data', {
+      const res = await fetch(apiUrl('/api/migrate-guest-data'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${authToken}`,

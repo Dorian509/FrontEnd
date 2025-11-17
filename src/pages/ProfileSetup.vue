@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { apiUrl } from '@/utils/api'
 
 const router = useRouter()
 
@@ -17,7 +18,7 @@ async function saveProfile() {
   loading.value = true
   error.value = null
   try {
-    const res = await fetch('/api/profile', {
+    const res = await fetch(apiUrl('/api/profile'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
