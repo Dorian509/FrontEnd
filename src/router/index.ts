@@ -8,7 +8,7 @@ import HistoryView from '../views/HistoryView.vue'
 import { useAuth } from '@/composables/useAuth'
 
 const router: Router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
