@@ -49,6 +49,12 @@ const router: Router = createRouter({
       name: 'Settings',
       component: Settings,
       meta: { requiresAuth: true }
+    },
+    // Catch-All Route für unbekannte URLs
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      redirect: '/login'
     }
   ]
 })

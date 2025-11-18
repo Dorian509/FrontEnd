@@ -7,10 +7,14 @@ import App from './App.vue'
 import router from './router'
 import { useAuth } from './composables/useAuth'
 
-// Initialize Auth before mounting the app
+// Create app and install router FIRST
+const app = createApp(App)
+app.use(router)
+
+// Initialize Auth AFTER router is installed
+// initAuth() braucht keinen Router, liest nur localStorage
 const { initAuth } = useAuth()
 initAuth()
 
-createApp(App)
-  .use(router)
-  .mount('#app')
+// Mount the app
+app.mount('#app')

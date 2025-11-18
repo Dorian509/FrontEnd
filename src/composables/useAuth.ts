@@ -37,7 +37,7 @@ const GUEST_PROFILE_KEY = 'guestProfile'
 const GUEST_HISTORY_KEY = 'guestHistory'
 
 export function useAuth() {
-  const router = useRouter()
+  // KEIN useRouter() hier! Wird lazy in den Funktionen geholt
 
   // Initialisiere Auth - Prüfe LocalStorage beim App-Start
   function initAuth() {
@@ -125,6 +125,8 @@ export function useAuth() {
         clearGuestData()
       }
 
+      // Router lazy holen und navigieren
+      const router = useRouter()
       router.push('/dashboard')
       return { success: true }
     } catch (error) {
@@ -203,6 +205,8 @@ export function useAuth() {
         clearGuestData()
       }
 
+      // Router lazy holen und navigieren
+      const router = useRouter()
       router.push('/dashboard')
       return { success: true, migrated: !!guestData }
     } catch (error) {
@@ -244,12 +248,16 @@ export function useAuth() {
       localStorage.setItem(GUEST_HYDRATION_DATA_KEY, JSON.stringify(defaultHydrationData))
     }
 
+    // Router lazy holen und navigieren
+    const router = useRouter()
     router.push('/dashboard')
   }
 
   // Logout
   function logout() {
     clearAuth()
+    // Router lazy holen und navigieren
+    const router = useRouter()
     router.push('/login')
   }
 
