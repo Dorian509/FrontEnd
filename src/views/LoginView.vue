@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 
-const { login, register, continueAsGuest } = useAuth()
+const { login, register, continueAsGuest, isAuthenticated, token, user } = useAuth()
 const router = useRouter()
 
 const mode = ref<'login' | 'register'>('login')
@@ -56,6 +56,14 @@ async function handleSubmit() {
 
     if (result.success) {
       console.log('✅ Auth successful, navigating to dashboard...')
+
+      // DEBUG: Auth State vor Navigation prüfen
+      console.log('🔍 Auth state before navigation:', {
+        isAuthenticated: isAuthenticated.value,
+        hasToken: !!token.value,
+        hasUser: !!user.value
+      })
+
       // Navigation nach erfolgreichem Login/Register
       try {
         await router.push('/dashboard')
