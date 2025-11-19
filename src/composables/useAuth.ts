@@ -67,6 +67,9 @@ export function useAuth() {
 
   // Login with email and password
   async function login(credentials: LoginCredentials) {
+    // ✅ Router ERSTE Zeile - VOR async/await!
+    const router = useRouter()
+
     try {
       console.log('🔐 Attempting login...', credentials.email)
 
@@ -125,9 +128,8 @@ export function useAuth() {
         clearGuestData()
       }
 
-      // Router lazy holen und navigieren
-      const router = useRouter()
-      router.push('/dashboard')
+      // Navigation
+      await router.push('/dashboard')
       return { success: true }
     } catch (error) {
       console.error('❌ Login error:', error)
@@ -140,6 +142,9 @@ export function useAuth() {
 
   // Register new user
   async function register(data: RegisterData) {
+    // ✅ Router ERSTE Zeile - VOR async/await!
+    const router = useRouter()
+
     try {
       console.log('📝 Attempting registration...', data.email)
 
@@ -213,8 +218,7 @@ export function useAuth() {
         clearGuestData()
       }
 
-      // Router lazy holen und navigieren
-      const router = useRouter()
+      // Navigation
       await router.push('/dashboard')
       return { success: true, migrated: !!guestData }
     } catch (error) {
