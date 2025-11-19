@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 
 const { login, register, continueAsGuest } = useAuth()
+const router = useRouter()
 
 const mode = ref<'login' | 'register'>('login')
 const email = ref('')
@@ -50,7 +52,10 @@ async function handleSubmit() {
       })
     }
 
-    if (!result.success) {
+    if (result.success) {
+      // Navigation nach erfolgreichem Login/Register
+      await router.push('/dashboard')
+    } else {
       error.value = result.error || 'Ein Fehler ist aufgetreten'
     }
   } finally {
