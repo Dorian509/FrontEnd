@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: hydratemate-frontend
+    name: frontend-b5ow
     env: static
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
