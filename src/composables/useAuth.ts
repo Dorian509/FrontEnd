@@ -150,7 +150,15 @@ export function useAuth() {
       const response = await fetch(apiUrl('/api/auth/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          // Default-Werte für Required-Felder
+          climate: 'NORMAL',
+          weightKg: 70,
+          activityLevel: 'MEDIUM'
+        })
       })
 
       console.log('📡 Response status:', response.status)
