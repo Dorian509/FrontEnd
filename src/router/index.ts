@@ -61,18 +61,31 @@ const router: Router = createRouter({
 
 // Navigation Guards
 router.beforeEach((to, _from, next) => {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, token, user, isGuest } = useAuth()
+
+  console.log('🛡️ Router Guard:', {
+    to: to.path,
+    isAuthenticated: isAuthenticated.value,
+    hasToken: !!token.value,
+    hasUser: !!user.value,
+    isGuest: isGuest.value,
+    requiresAuth: to.meta.requiresAuth,
+    requiresGuest: to.meta.requiresGuest
+  })
 
   // Routes that require authentication
   if (to.meta.requiresAuth && !isAuthenticated.value) {
+    console.log('⛔ Redirecting to /login - not authenticated')
     next('/login')
   }
   // Routes that require guest (not authenticated)
   else if (to.meta.requiresGuest && isAuthenticated.value) {
+    console.log('⛔ Redirecting to /dashboard - already authenticated')
     next('/dashboard')
   }
   // Allow navigation
   else {
+    console.log('✅ Navigation allowed to', to.path)
     next()
   }
 })

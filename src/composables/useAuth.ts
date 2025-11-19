@@ -25,8 +25,12 @@ const user = ref<User | null>(null)
 const token = ref<string | null>(null)
 const isGuest = ref(false)
 
-// Computed
-const isAuthenticated = computed(() => !!user.value || isGuest.value)
+// Computed - KRITISCH: Prüfe token UND user für echte Auth, oder isGuest
+const isAuthenticated = computed(() => {
+  const hasValidAuth = !!token.value && !!user.value && !isGuest.value
+  const isGuestMode = isGuest.value
+  return hasValidAuth || isGuestMode
+})
 
 // LocalStorage Keys
 const AUTH_TOKEN_KEY = 'authToken'
@@ -122,6 +126,14 @@ export function useAuth() {
       // Save to localStorage
       localStorage.setItem(AUTH_TOKEN_KEY, data.token)
       localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+      localStorage.removeItem(GUEST_MODE_KEY)  // Wichtig: Gast-Modus entfernen!
+
+      console.log('🔐 Auth state updated:', {
+        hasToken: !!token.value,
+        hasUser: !!user.value,
+        isGuest: isGuest.value,
+        isAuthenticated: !!token.value && !!user.value && !isGuest.value
+      })
 
       // Migrate guest data if exists
       const guestData = collectGuestData()
@@ -205,6 +217,14 @@ export function useAuth() {
       // 4. Speichere Auth in LocalStorage
       localStorage.setItem(AUTH_TOKEN_KEY, responseData.token)
       localStorage.setItem(USER_KEY, JSON.stringify(responseData.user))
+      localStorage.removeItem(GUEST_MODE_KEY)  // Wichtig: Gast-Modus entfernen!
+
+      console.log('🔐 Auth state updated after registration:', {
+        hasToken: !!token.value,
+        hasUser: !!user.value,
+        isGuest: isGuest.value,
+        isAuthenticated: !!token.value && !!user.value && !isGuest.value
+      })
 
       // 5. Migriere Gast-Daten falls vorhanden
       if (guestData && (guestData.hydration || guestData.history.length > 0)) {
