@@ -52,12 +52,24 @@ async function handleSubmit() {
       })
     }
 
+    console.log('Auth result:', result)
+
     if (result.success) {
+      console.log('✅ Auth successful, navigating to dashboard...')
       // Navigation nach erfolgreichem Login/Register
-      await router.push('/dashboard')
+      try {
+        await router.push('/dashboard')
+        console.log('✅ Navigation complete')
+      } catch (navError) {
+        console.error('❌ Navigation failed:', navError)
+        error.value = 'Navigation fehlgeschlagen'
+      }
     } else {
       error.value = result.error || 'Ein Fehler ist aufgetreten'
     }
+  } catch (err) {
+    console.error('❌ Unexpected error:', err)
+    error.value = err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten'
   } finally {
     loading.value = false
   }
