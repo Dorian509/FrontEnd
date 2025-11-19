@@ -215,7 +215,7 @@ export function useAuth() {
 
       // Router lazy holen und navigieren
       const router = useRouter()
-      router.push('/dashboard')
+      await router.push('/dashboard')
       return { success: true, migrated: !!guestData }
     } catch (error) {
       console.error('❌ Registration error:', error)
