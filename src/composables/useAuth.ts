@@ -50,14 +50,25 @@ export function useAuth() {
         return
       }
 
-      // Prüfe auf authentifizierten Benutzer
+      // Token laden
       const savedToken = localStorage.getItem(AUTH_TOKEN_KEY)
-      const savedUser = localStorage.getItem(USER_KEY)
-
-      if (savedToken && savedUser) {
+      if (savedToken) {
         token.value = savedToken
-        user.value = JSON.parse(savedUser)
-        console.log('User authenticated from localStorage:', user.value)
+      }
+
+      // User laden - MIT Error Handling für korrupte Daten!
+      const savedUser = localStorage.getItem(USER_KEY)
+      if (savedUser) {
+        try {
+          user.value = JSON.parse(savedUser)
+          console.log('User authenticated from localStorage:', user.value)
+        } catch (parseError) {
+          console.error('Failed to parse user data:', parseError)
+          // Korrupte Daten löschen
+          localStorage.removeItem(USER_KEY)
+          localStorage.removeItem(AUTH_TOKEN_KEY)
+          token.value = null
+        }
       }
     } catch (error) {
       console.error('Error initializing auth:', error)
@@ -67,9 +78,6 @@ export function useAuth() {
 
   // Login with email and password
   async function login(credentials: LoginCredentials) {
-    // ✅ Router ERSTE Zeile - VOR async/await!
-    const router = useRouter()
-
     try {
       console.log('🔐 Attempting login...', credentials.email)
 
@@ -128,8 +136,7 @@ export function useAuth() {
         clearGuestData()
       }
 
-      // Navigation
-      await router.push('/dashboard')
+      // KEIN router.push() hier - Komponente macht die Navigation
       return { success: true }
     } catch (error) {
       console.error('❌ Login error:', error)
@@ -142,9 +149,6 @@ export function useAuth() {
 
   // Register new user
   async function register(data: RegisterData) {
-    // ✅ Router ERSTE Zeile - VOR async/await!
-    const router = useRouter()
-
     try {
       console.log('📝 Attempting registration...', data.email)
 
@@ -211,15 +215,13 @@ export function useAuth() {
           clearGuestData()
         } else {
           console.warn('⚠️ Migration failed, keeping guest data in LocalStorage as backup')
-          // Optional: Zeige User eine Warnung
         }
       } else {
         // Keine Gast-Daten vorhanden, räume trotzdem auf
         clearGuestData()
       }
 
-      // Navigation
-      await router.push('/dashboard')
+      // KEIN router.push() hier - Komponente macht die Navigation
       return { success: true, migrated: !!guestData }
     } catch (error) {
       console.error('❌ Registration error:', error)
