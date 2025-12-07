@@ -159,7 +159,7 @@ async function deleteEntry(entry: IntakeEntry) {
     <nav class="bg-gray-900 bg-opacity-80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-800">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
         <div class="flex items-center space-x-2">
-          <i class="fas fa-droplet text-game-cyan text-2xl"></i>
+          <font-awesome-icon icon="droplet" class="text-game-cyan text-2xl" />
           <h1 class="text-xl font-bold bg-gradient-to-r from-game-cyan to-game-blue bg-clip-text text-transparent">HydrateMate</h1>
         </div>
 
@@ -172,7 +172,7 @@ async function deleteEntry(entry: IntakeEntry) {
 
         <div class="flex items-center space-x-4">
           <button @click="router.push('/dashboard')" class="text-gray-400 hover:text-white">
-            <i class="fas fa-arrow-left mr-2"></i>
+            <font-awesome-icon icon="arrow-left" class="mr-2" />
             Zurück
           </button>
         </div>
@@ -184,7 +184,7 @@ async function deleteEntry(entry: IntakeEntry) {
       <!-- Header -->
       <div class="mb-8">
         <h2 class="text-3xl font-bold mb-2">
-          <i class="fas fa-history text-game-cyan mr-3"></i>
+          <font-awesome-icon icon="history" class="text-game-cyan mr-3" />
           Verlauf
         </h2>
         <p class="text-gray-400">Alle deine Trinkaktionen im Überblick</p>
@@ -249,14 +249,14 @@ async function deleteEntry(entry: IntakeEntry) {
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-900/30 border border-red-700 rounded-xl p-8">
         <div class="flex items-center gap-3">
-          <i class="fas fa-exclamation-circle text-red-500 text-2xl"></i>
+          <font-awesome-icon icon="exclamation-circle" class="text-red-500 text-2xl" />
           <p class="text-red-300">{{ error }}</p>
         </div>
       </div>
 
       <!-- Empty State -->
       <div v-else-if="filteredHistory.length === 0" class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-12 border border-gray-700 text-center">
-        <i class="fas fa-droplet text-gray-600 text-6xl mb-4"></i>
+        <font-awesome-icon icon="droplet" class="text-gray-600 text-6xl mb-4" />
         <h3 class="text-xl font-bold text-gray-400 mb-2">Noch keine Einträge</h3>
         <p class="text-gray-500 mb-6">Füge Wasser hinzu um deinen Verlauf zu sehen</p>
         <button
@@ -292,7 +292,7 @@ async function deleteEntry(entry: IntakeEntry) {
                 <div
                   :class="`h-12 w-12 rounded-full bg-${sourceConfig[entry.source].color} bg-opacity-20 flex items-center justify-center`"
                 >
-                  <i :class="`fas ${sourceConfig[entry.source].icon} text-${sourceConfig[entry.source].color} text-xl`"></i>
+                  <font-awesome-icon :icon="sourceConfig[entry.source].icon.replace('fa-', '')" :class="`text-${sourceConfig[entry.source].color} text-xl`" />
                 </div>
 
                 <!-- Details -->
@@ -309,7 +309,7 @@ async function deleteEntry(entry: IntakeEntry) {
                 @click="deleteEntry(entry)"
                 class="opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-400 p-2"
               >
-                <i class="fas fa-trash"></i>
+                <font-awesome-icon icon="trash" />
               </button>
             </div>
           </div>

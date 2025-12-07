@@ -99,13 +99,13 @@ async function handleUpgrade() {
       <div class="flex items-center justify-between gap-4 flex-wrap">
         <div class="flex items-center gap-3 flex-1 min-w-0">
           <div class="flex-shrink-0">
-            <i class="fas fa-exclamation-triangle text-amber-500 text-2xl"></i>
+            <font-awesome-icon icon="exclamation-triangle" class="text-amber-500 text-2xl" />
           </div>
           <div class="min-w-0">
             <p class="font-bold text-white">Gast-Modus aktiv</p>
             <p class="text-sm text-gray-300">Deine Daten werden nur lokal gespeichert</p>
             <p v-if="guestDataStats && guestDataStats.historyCount > 0" class="text-xs text-amber-400 mt-1">
-              <i class="fas fa-database mr-1"></i>{{ guestDataStats.historyCount }} Einträge gespeichert
+              <font-awesome-icon icon="database" class="mr-1" />{{ guestDataStats.historyCount }} Einträge gespeichert
             </p>
           </div>
         </div>
@@ -114,7 +114,7 @@ async function handleUpgrade() {
             @click="openUpgradeModal"
             class="bg-gradient-to-r from-game-cyan to-game-blue px-4 py-2 rounded-lg font-medium text-white hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg whitespace-nowrap"
           >
-            <i class="fas fa-user-plus mr-2"></i>
+            <font-awesome-icon icon="user-plus" class="mr-2" />
             Jetzt registrieren
           </button>
           <button
@@ -122,7 +122,7 @@ async function handleUpgrade() {
             class="text-gray-400 hover:text-white transition-colors p-2"
             title="Banner ausblenden"
           >
-            <i class="fas fa-times"></i>
+            <font-awesome-icon icon="times" />
           </button>
         </div>
       </div>
@@ -164,7 +164,7 @@ async function handleUpgrade() {
               @click="closeUpgradeModal"
               class="text-gray-400 hover:text-white transition-colors p-1"
             >
-              <i class="fas fa-times text-xl"></i>
+              <font-awesome-icon icon="times" class="text-xl" />
             </button>
           </div>
 
@@ -173,15 +173,15 @@ async function handleUpgrade() {
             <p class="text-sm font-medium text-white mb-3">Deine Vorteile:</p>
             <ul class="space-y-2 text-sm text-gray-300">
               <li class="flex items-start gap-2">
-                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                <font-awesome-icon icon="check" class="text-green-500 mt-0.5" />
                 <span>Deine bisherigen Daten bleiben erhalten</span>
               </li>
               <li class="flex items-start gap-2">
-                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                <font-awesome-icon icon="check" class="text-green-500 mt-0.5" />
                 <span>Synchronisierung auf allen Geräten</span>
               </li>
               <li class="flex items-start gap-2">
-                <i class="fas fa-check text-green-500 mt-0.5"></i>
+                <font-awesome-icon icon="check" class="text-green-500 mt-0.5" />
                 <span>Fortschritt und Statistiken bleiben erhalten</span>
               </li>
             </ul>
@@ -190,7 +190,7 @@ async function handleUpgrade() {
           <!-- Data Migration Info -->
           <div v-if="guestDataStats && guestDataStats.historyCount > 0" class="bg-game-cyan/10 border border-game-cyan/30 rounded-lg p-4 mb-6">
             <p class="text-sm text-game-cyan flex items-center gap-2">
-              <i class="fas fa-database"></i>
+              <font-awesome-icon icon="database" />
               <strong>{{ guestDataStats.historyCount }}</strong> Einträge werden automatisch übertragen
             </p>
           </div>
@@ -205,7 +205,7 @@ async function handleUpgrade() {
             leave-to-class="transform scale-95 opacity-0"
           >
             <div v-if="error" class="bg-red-900/30 border border-red-700 rounded-lg p-4 mb-6 flex items-start gap-3">
-              <i class="fas fa-exclamation-circle text-red-500 mt-0.5"></i>
+              <font-awesome-icon icon="exclamation-circle" class="text-red-500 mt-0.5" />
               <span class="text-red-400 text-sm">{{ error }}</span>
             </div>
           </transition>
@@ -215,7 +215,7 @@ async function handleUpgrade() {
             <!-- Name -->
             <div>
               <label for="upgrade-name" class="block text-sm font-medium text-gray-400 mb-2">
-                <i class="fas fa-user mr-2"></i>Dein Name
+                <font-awesome-icon icon="user" class="mr-2" />Dein Name
               </label>
               <input
                 id="upgrade-name"
@@ -229,7 +229,7 @@ async function handleUpgrade() {
             <!-- Email -->
             <div>
               <label for="upgrade-email" class="block text-sm font-medium text-gray-400 mb-2">
-                <i class="fas fa-envelope mr-2"></i>E-Mail
+                <font-awesome-icon icon="envelope" class="mr-2" />E-Mail
               </label>
               <input
                 id="upgrade-email"
@@ -244,7 +244,7 @@ async function handleUpgrade() {
             <!-- Password -->
             <div>
               <label for="upgrade-password" class="block text-sm font-medium text-gray-400 mb-2">
-                <i class="fas fa-lock mr-2"></i>Passwort
+                <font-awesome-icon icon="lock" class="mr-2" />Passwort
               </label>
               <input
                 id="upgrade-password"
@@ -272,11 +272,11 @@ async function handleUpgrade() {
                 class="flex-1 bg-gradient-to-r from-game-cyan to-game-blue py-3 rounded-lg font-bold text-white shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <span v-if="!loading">
-                  <i class="fas fa-rocket mr-2"></i>
+                  <font-awesome-icon icon="rocket" class="mr-2" />
                   Account erstellen
                 </span>
                 <span v-else class="flex items-center justify-center gap-2">
-                  <i class="fas fa-circle-notch fa-spin"></i>
+                  <font-awesome-icon icon="circle-notch" class="fa-spin" />
                   Lädt...
                 </span>
               </button>
