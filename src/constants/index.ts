@@ -127,7 +127,7 @@ export const API_ENDPOINTS = {
   // Intakes
   INTAKES: {
     CREATE: apiUrl('/api/intakes'),
-    HISTORY: (userId: number) => apiUrl(`/api/intakes/${userId}/history`),
+    HISTORY: (userId: number) => apiUrl(`/api/intakes/${userId}/recent?limit=50`),
     DELETE: (intakeId: number) => apiUrl(`/api/intakes/${intakeId}`)
   },
 
