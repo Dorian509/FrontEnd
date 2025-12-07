@@ -27,3 +27,48 @@ html, body, #app { height: 100%; }
     /* Container mit größerer max-width */
     --container-2xl: 1920px;
 }
+
+/* ============================================================================
+   Font Awesome Icon Fix - Verhindere Überschreibung durch Body-Font
+   ============================================================================ */
+
+/* Font Awesome Icons - Stelle sicher dass die korrekte Font verwendet wird */
+.fas,
+.far,
+.fal,
+.fab,
+.fa {
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900 !important;
+}
+
+.far {
+  font-weight: 400 !important;
+}
+
+/* Brands haben eigene Font-Family */
+.fab {
+  font-family: "Font Awesome 6 Brands" !important;
+  font-weight: 400 !important;
+}
+
+/* Stelle sicher dass Icons immer korrekt rendern */
+i.fas,
+i.far,
+i.fal,
+i.fab,
+i.fa {
+  font-style: normal !important;
+  font-variant: normal !important;
+  text-rendering: auto !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Tailwind reset prevention für Font Awesome */
+.fas::before,
+.far::before,
+.fal::before,
+.fab::before,
+.fa::before {
+  font-family: inherit !important;
+}
