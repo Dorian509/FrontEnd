@@ -427,14 +427,11 @@ function getSourceLabel(source: Source): string {
       <div v-else class="space-y-8">
         <!-- Hero Card - Daily Progress -->
         <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-300">
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <h1 class="text-4xl font-bold bg-gradient-to-r from-game-cyan to-game-blue bg-clip-text text-transparent mb-2">
-                Dein heutiges Ziel
-              </h1>
-              <p class="text-gray-400">Bleib am Ball und erreiche dein Tagesziel! <font-awesome-icon icon="bullseye" class="text-game-blue" /></p>
-            </div>
-            <div class="text-4xl animate-bounce"><font-awesome-icon icon="droplet" class="text-game-cyan" /></div>
+          <div class="mb-6">
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-game-cyan to-game-blue bg-clip-text text-transparent mb-2">
+              Dein heutiges Ziel
+            </h1>
+            <p class="text-gray-400">Bleib am Ball und erreiche dein Tagesziel! <font-awesome-icon icon="bullseye" class="text-game-blue" /></p>
           </div>
 
           <!-- Progress Stats -->
