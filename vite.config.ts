@@ -6,12 +6,20 @@ import path from 'path'
 export default defineConfig({
     plugins: [
         vue(),
-        tailwindcss(),                            // 👈 hinzugefügt!
+        tailwindcss(),
     ],
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src')
         }
+    },
+    css: {
+        devSourcemap: true,
+        transformer: 'postcss',  // Verwende PostCSS statt LightningCSS
+    },
+    build: {
+        cssMinify: false,  // Deaktiviere CSS Minification komplett!
+        minify: 'esbuild'  // Nur JS minification
     },
     server: {
         proxy: {
