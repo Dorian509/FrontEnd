@@ -1,6 +1,6 @@
 import './assets/base.css'
 import './style.css'
-import '@fortawesome/fontawesome-free/css/all.css'
+// Font Awesome wird jetzt über CDN in index.html geladen
 
 import { createApp } from 'vue'
 import App from './App.vue'
