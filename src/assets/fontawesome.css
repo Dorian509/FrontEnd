@@ -1,0 +1,115 @@
+/* Font Awesome Icons - Self-hosted to avoid CORS issues */
+
+/* @font-face definitions */
+@font-face {
+  font-family: 'Font Awesome 6 Free';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url('/webfonts/fa-solid-900.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Font Awesome 6 Free';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/webfonts/fa-regular-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Font Awesome 6 Brands';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/webfonts/fa-brands-400.woff2') format('woff2');
+}
+
+/* Base icon styles */
+.fas, .fa-solid {
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+}
+
+.far, .fa-regular {
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 400;
+}
+
+.fab, .fa-brands {
+  font-family: 'Font Awesome 6 Brands';
+  font-weight: 400;
+}
+
+.fas, .far, .fab, .fa {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+}
+
+/* Icon content codes */
+.fa-arrow-left:before { content: "\f060"; }
+.fa-bell:before { content: "\f0f3"; }
+.fa-bullseye:before { content: "\f140"; }
+.fa-calculator:before { content: "\f1ec"; }
+.fa-chart-bar:before { content: "\f080"; }
+.fa-chart-column:before { content: "\e0e3"; }
+.fa-chart-line:before { content: "\f201"; }
+.fa-check:before { content: "\f00c"; }
+.fa-check-circle:before { content: "\f058"; }
+.fa-circle-notch:before { content: "\f1ce"; }
+.fa-cloud-sun:before { content: "\f6c4"; }
+.fa-couch:before { content: "\f4b8"; }
+.fa-database:before { content: "\f1c0"; }
+.fa-droplet:before { content: "\f043"; }
+.fa-edit:before { content: "\f044"; }
+.fa-envelope:before { content: "\f0e0"; }
+.fa-exclamation-circle:before { content: "\f06a"; }
+.fa-exclamation-triangle:before { content: "\f071"; }
+.fa-fire:before { content: "\f06d"; }
+.fa-glass-water:before { content: "\e4f4"; }
+.fa-glass-water-droplet:before { content: "\e4f5"; }
+.fa-history:before { content: "\f1da"; }
+.fa-hourglass-half:before { content: "\f252"; }
+.fa-info-circle:before { content: "\f05a"; }
+.fa-lightbulb:before { content: "\f0eb"; }
+.fa-list:before { content: "\f03a"; }
+.fa-lock:before { content: "\f023"; }
+.fa-medal:before { content: "\f5a2"; }
+.fa-minus-circle:before { content: "\f056"; }
+.fa-plus:before { content: "\2b"; }
+.fa-plus-circle:before { content: "\f055"; }
+.fa-rocket:before { content: "\f135"; }
+.fa-running:before { content: "\f70c"; }
+.fa-sign-in-alt:before { content: "\f2f6"; }
+.fa-sign-out-alt:before { content: "\f2f5"; }
+.fa-sliders:before { content: "\f1de"; }
+.fa-star:before { content: "\f005"; }
+.fa-table:before { content: "\f0ce"; }
+.fa-temperature-high:before { content: "\f769"; }
+.fa-times:before { content: "\f00d"; }
+.fa-trash:before { content: "\f1f8"; }
+.fa-trophy:before { content: "\f091"; }
+.fa-user:before { content: "\f007"; }
+.fa-user-plus:before { content: "\f234"; }
+.fa-user-secret:before { content: "\f21b"; }
+.fa-walking:before { content: "\f554"; }
+.fa-weight-scale:before { content: "\f496"; }
+
+/* Animation classes */
+.fa-spin {
+  animation: fa-spin 2s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

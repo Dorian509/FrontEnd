@@ -1,6 +1,6 @@
 import './assets/base.css'
+import './assets/fontawesome.css'  // Self-hosted Font Awesome
 import './style.css'
-// Font Awesome wird jetzt über CDN in index.html geladen
 
 import { createApp } from 'vue'
 import App from './App.vue'
