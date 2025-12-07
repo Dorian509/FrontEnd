@@ -82,7 +82,7 @@ async function loadHistory() {
       }
     } else {
       // Lade von API
-      const res = await fetch(apiUrl(`/api/intakes/${user.value?.id}/history`), {
+      const res = await fetch(apiUrl(`/api/intakes/${user.value?.id}/recent?limit=50`), {
         headers: getAuthHeaders()
       })
 
