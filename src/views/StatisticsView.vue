@@ -7,6 +7,16 @@ import { apiUrl } from '@/utils/api'
 const router = useRouter()
 const { user, isGuest, getAuthHeaders } = useAuth()
 
+type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS'
+
+interface Intake {
+  id: number
+  userId: number
+  volumeMl: number
+  source: Source
+  timestamp: string
+}
+
 interface DayStats {
   date: string
   consumedMl: number
@@ -17,6 +27,7 @@ interface DayStats {
 const stats = ref<DayStats[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
+const goalMl = ref(2500) // Default goal
 
 // Berechne Gesamt-Statistiken
 const totalStats = computed(() => {
@@ -36,8 +47,25 @@ const totalStats = computed(() => {
 })
 
 onMounted(async () => {
+  await loadGoal()
   await loadStats()
 })
+
+async function loadGoal() {
+  try {
+    if (!isGuest.value && user.value?.id) {
+      const res = await fetch(apiUrl(`/api/profile/${user.value.id}`), {
+        headers: getAuthHeaders()
+      })
+      if (res.ok) {
+        const profile = await res.json()
+        goalMl.value = profile.goalMl || 2500
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load goal:', e)
+  }
+}
 
 async function loadStats() {
   loading.value = true
@@ -55,13 +83,16 @@ async function loadStats() {
         localStorage.setItem('guestStats', JSON.stringify(stats.value))
       }
     } else {
-      // Lade von API
-      const res = await fetch(apiUrl(`/api/statistics/${user.value?.id}/last-7-days`), {
+      // Lade Intakes von API und berechne Statistiken
+      const res = await fetch(apiUrl(`/api/intakes/${user.value?.id}/recent?limit=100`), {
         headers: getAuthHeaders()
       })
 
       if (!res.ok) throw new Error('HTTP ' + res.status)
-      stats.value = await res.json()
+      const intakes: Intake[] = await res.json()
+
+      // Berechne Statistiken aus den Intakes
+      stats.value = calculateDailyStats(intakes, goalMl.value)
     }
   } catch (e) {
     error.value = String(e)
@@ -70,10 +101,40 @@ async function loadStats() {
   }
 }
 
+// Helper: Berechne tägliche Statistiken aus Intakes
+function calculateDailyStats(intakes: Intake[], goal: number): DayStats[] {
+  const today = new Date()
+  const dailyStats: DayStats[] = []
+
+  // Erstelle Einträge für die letzten 7 Tage
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    const dateStr = date.toISOString().split('T')[0]
+
+    // Summiere alle Intakes für diesen Tag
+    const dayIntakes = intakes.filter(intake => {
+      const intakeDate = new Date(intake.timestamp).toISOString().split('T')[0]
+      return intakeDate === dateStr
+    })
+
+    const consumedMl = dayIntakes.reduce((sum, intake) => sum + intake.volumeMl, 0)
+    const percentage = Math.round((consumedMl / goal) * 100)
+
+    dailyStats.push({
+      date: dateStr,
+      consumedMl,
+      goalMl: goal,
+      percentage
+    })
+  }
+
+  return dailyStats
+}
+
 function generateMockStats(): DayStats[] {
   const stats: DayStats[] = []
   const today = new Date()
-  const goalMl = 2500
 
   for (let i = 6; i >= 0; i--) {
     const date = new Date(today)
@@ -85,8 +146,8 @@ function generateMockStats(): DayStats[] {
     stats.push({
       date: date.toISOString().split('T')[0],
       consumedMl,
-      goalMl,
-      percentage: Math.round((consumedMl / goalMl) * 100)
+      goalMl: goalMl.value,
+      percentage: Math.round((consumedMl / goalMl.value) * 100)
     })
   }
 

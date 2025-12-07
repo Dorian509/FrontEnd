@@ -120,8 +120,7 @@ export const API_ENDPOINTS = {
 
   // Hydration
   HYDRATION: {
-    TODAY: (userId: number) => apiUrl(`/api/hydration/today/${userId}`),
-    STATS: (userId: number) => apiUrl(`/api/statistics/${userId}/last-7-days`)
+    TODAY: (userId: number) => apiUrl(`/api/hydration/today/${userId}`)
   },
 
   // Intakes
