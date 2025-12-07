@@ -208,7 +208,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
           </button>
-          <i class="fas fa-droplet text-game-cyan text-2xl"></i>
+          <font-awesome-icon icon="droplet" class="text-game-cyan text-2xl" />
           <h1 class="text-xl font-bold bg-gradient-to-r from-game-cyan to-game-blue bg-clip-text text-transparent">HydrateMate</h1>
         </div>
 
@@ -223,7 +223,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
               'h-8 w-8 rounded-full flex items-center justify-center',
               isGuest ? 'bg-amber-500' : 'bg-game-cyan'
             ]">
-              <i :class="['text-sm', isGuest ? 'fas fa-user-secret' : 'fas fa-user']"></i>
+              <font-awesome-icon :icon="isGuest ? 'user-secret' : 'user'" class="text-sm" />
             </div>
             <span class="font-medium">{{ user?.name || 'Gast' }}</span>
           </div>
@@ -242,7 +242,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
       <!-- Gast-Modus Info Banner -->
       <div v-if="isGuest" class="bg-gradient-to-r from-amber-900/40 to-orange-900/40 border-2 border-amber-700/50 rounded-xl p-4 mb-6 shadow-lg">
         <div class="flex items-center gap-3">
-          <i class="fas fa-info-circle text-amber-500 text-xl"></i>
+          <font-awesome-icon icon="info-circle" class="text-amber-500 text-xl" />
           <div>
             <p class="font-bold text-white">Gast-Modus aktiv</p>
             <p class="text-sm text-gray-300">Deine Einstellungen werden nur lokal auf diesem Gerät gespeichert</p>
@@ -279,7 +279,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-900/30 border border-red-700 rounded-xl p-8">
         <div class="flex items-center gap-3 mb-4">
-          <i class="fas fa-exclamation-triangle text-red-400 text-3xl"></i>
+          <font-awesome-icon icon="exclamation-triangle" class="text-red-400 text-3xl" />
           <p class="text-red-400 font-semibold">{{ error }}</p>
         </div>
         <button @click="loadProfile" class="bg-gradient-to-r from-game-cyan to-game-blue px-6 py-3 rounded-lg font-bold text-white shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all">
@@ -296,7 +296,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
               <div class="space-y-4">
                 <div class="flex items-center justify-between">
                   <label class="text-xl font-bold flex items-center gap-2">
-                    <i class="fas fa-weight-scale text-game-purple text-2xl"></i>
+                    <font-awesome-icon icon="weight-scale" class="text-game-purple text-2xl" />
                     Dein Gewicht
                   </label>
                   <div class="px-6 py-3 bg-gradient-to-r from-game-cyan to-game-blue rounded-lg font-bold text-2xl shadow-lg text-white">
@@ -322,7 +322,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
               <!-- Aktivitätslevel -->
               <div class="space-y-4">
                 <label class="text-xl font-bold flex items-center gap-2">
-                  <i class="fas fa-running text-game-blue text-2xl"></i>
+                  <font-awesome-icon icon="running" class="text-game-blue text-2xl" />
                   Aktivitätslevel
                 </label>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -336,7 +336,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
                         : 'bg-gray-800 hover:bg-gray-750 text-gray-300 border-gray-700 hover:border-game-cyan'
                     ]"
                   >
-                    <i class="fas fa-couch text-4xl mb-3"></i>
+                    <font-awesome-icon icon="couch" class="text-4xl mb-3" />
                     <div class="font-bold text-lg mb-2">Niedrig</div>
                     <div :class="['text-sm', activityLevel === 'LOW' ? 'text-white/80' : 'text-gray-400']">
                       Bürojob, wenig Bewegung
@@ -353,7 +353,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
                         : 'bg-gray-800 hover:bg-gray-750 text-gray-300 border-gray-700 hover:border-game-cyan'
                     ]"
                   >
-                    <i class="fas fa-walking text-4xl mb-3"></i>
+                    <font-awesome-icon icon="walking" class="text-4xl mb-3" />
                     <div class="font-bold text-lg mb-2">Mittel</div>
                     <div :class="['text-sm', activityLevel === 'MEDIUM' ? 'text-white/80' : 'text-gray-400']">
                       Regelmäßige Bewegung (+250ml)
@@ -370,7 +370,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
                         : 'bg-gray-800 hover:bg-gray-750 text-gray-300 border-gray-700 hover:border-game-cyan'
                     ]"
                   >
-                    <i class="fas fa-running text-4xl mb-3"></i>
+                    <font-awesome-icon icon="running" class="text-4xl mb-3" />
                     <div class="font-bold text-lg mb-2">Hoch</div>
                     <div :class="['text-sm', activityLevel === 'HIGH' ? 'text-white/80' : 'text-gray-400']">
                       Sehr aktiv, Sport (+500ml)
@@ -382,7 +382,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
               <!-- Klima -->
               <div class="space-y-4">
                 <label class="text-xl font-bold flex items-center gap-2">
-                  <i class="fas fa-temperature-high text-game-pink text-2xl"></i>
+                  <font-awesome-icon icon="temperature-high" class="text-game-pink text-2xl" />
                   Dein Klima
                 </label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -396,7 +396,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
                         : 'bg-gray-800 hover:bg-gray-750 text-gray-300 border-gray-700 hover:border-game-cyan'
                     ]"
                   >
-                    <i class="fas fa-cloud-sun text-4xl mb-3"></i>
+                    <font-awesome-icon icon="cloud-sun" class="text-4xl mb-3" />
                     <div class="font-bold text-lg mb-2">Normal</div>
                     <div :class="['text-sm', climate === 'NORMAL' ? 'text-white/80' : 'text-gray-400']">
                       Gemäßigtes Klima
@@ -413,7 +413,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
                         : 'bg-gray-800 hover:bg-gray-750 text-gray-300 border-gray-700 hover:border-game-cyan'
                     ]"
                   >
-                    <i class="fas fa-temperature-high text-4xl mb-3"></i>
+                    <font-awesome-icon icon="temperature-high" class="text-4xl mb-3" />
                     <div class="font-bold text-lg mb-2">Heiß</div>
                     <div :class="['text-sm', climate === 'HOT' ? 'text-white/80' : 'text-gray-400']">
                       Heißes Klima (+500ml)
@@ -431,7 +431,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
                       {{ calculatedGoal }} ml
                     </div>
                   </div>
-                  <i class="fas fa-droplet text-game-cyan text-6xl"></i>
+                  <font-awesome-icon icon="droplet" class="text-game-cyan text-6xl" />
                 </div>
                 <div class="text-sm space-y-2 bg-gray-800 rounded-lg p-4 border border-gray-700">
                   <div class="font-bold mb-3 text-game-cyan">Berechnung:</div>
@@ -465,7 +465,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
         <!-- Account Management -->
         <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700 shadow-lg">
           <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
-            <i class="fas fa-sliders text-game-purple"></i>
+            <font-awesome-icon icon="sliders" class="text-game-purple" />
             Account
           </h3>
 
@@ -479,7 +479,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
                 </p>
               </div>
               <div>
-                <i :class="`fas ${isGuest ? 'fa-user-secret' : 'fa-user'} text-game-cyan text-2xl`"></i>
+                <font-awesome-icon :icon="isGuest ? 'user-secret' : 'user'" class="text-game-cyan text-2xl" />
               </div>
             </div>
 
@@ -488,7 +488,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
               @click="logout"
               class="w-full bg-gray-700 hover:bg-red-600 py-3 rounded-lg font-medium text-white transition-all duration-200 flex items-center justify-center gap-2"
             >
-              <i class="fas fa-sign-out-alt"></i>
+              <font-awesome-icon icon="sign-out-alt" />
               Abmelden
             </button>
           </div>

@@ -108,7 +108,7 @@ function calcEstimatedGoal() {
                     : 'bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50'
                 ]"
               >
-                <i class="fas fa-couch text-5xl mb-4"></i>
+                <font-awesome-icon icon="couch" class="text-5xl mb-4" />
                 <div class="font-semibold text-lg">Niedrig</div>
               </button>
 
@@ -122,7 +122,7 @@ function calcEstimatedGoal() {
                     : 'bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50'
                 ]"
               >
-                <i class="fas fa-walking text-5xl mb-4"></i>
+                <font-awesome-icon icon="walking" class="text-5xl mb-4" />
                 <div class="font-semibold text-lg">Mittel</div>
               </button>
 
@@ -136,7 +136,7 @@ function calcEstimatedGoal() {
                     : 'bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50'
                 ]"
               >
-                <i class="fas fa-running text-5xl mb-4"></i>
+                <font-awesome-icon icon="running" class="text-5xl mb-4" />
                 <div class="font-semibold text-lg">Hoch</div>
               </button>
             </div>
@@ -158,7 +158,7 @@ function calcEstimatedGoal() {
                     : 'bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50'
                 ]"
               >
-                <i class="fas fa-cloud-sun text-5xl mb-4"></i>
+                <font-awesome-icon icon="cloud-sun" class="text-5xl mb-4" />
                 <div class="font-semibold text-lg">Normal</div>
               </button>
 
@@ -172,7 +172,7 @@ function calcEstimatedGoal() {
                     : 'bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50'
                 ]"
               >
-                <i class="fas fa-temperature-high text-5xl mb-4"></i>
+                <font-awesome-icon icon="temperature-high" class="text-5xl mb-4" />
                 <div class="font-semibold text-lg">Heiß</div>
               </button>
             </div>
@@ -185,7 +185,7 @@ function calcEstimatedGoal() {
                 <div class="text-sm opacity-90 mb-2">Dein persönliches Tagesziel</div>
                 <div class="text-6xl font-bold">{{ calcEstimatedGoal() }} ml</div>
               </div>
-              <i class="fas fa-droplet text-7xl"></i>
+              <font-awesome-icon icon="droplet" class="text-7xl" />
             </div>
             <div class="text-sm opacity-90 space-y-2 bg-white/15 rounded-xl p-5 border border-white/20">
               <div class="font-semibold mb-3">Berechnung:</div>

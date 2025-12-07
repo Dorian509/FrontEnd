@@ -152,7 +152,7 @@ function switchMode() {
           leave-to-class="transform scale-95 opacity-0"
         >
           <div v-if="error" class="bg-red-900/30 border border-red-700 rounded-lg p-4 mb-6 flex items-start gap-3">
-            <i class="fas fa-exclamation-circle text-red-500 mt-0.5"></i>
+            <font-awesome-icon icon="exclamation-circle" class="text-red-500 mt-0.5" />
             <span class="text-red-400 text-sm">{{ error }}</span>
           </div>
         </transition>
@@ -170,7 +170,7 @@ function switchMode() {
           >
             <div v-if="mode === 'register'">
               <label for="name" class="block text-sm font-medium text-gray-400 mb-2">
-                <i class="fas fa-user mr-2"></i>Dein Name
+                <font-awesome-icon icon="user" class="mr-2" />Dein Name
               </label>
               <input
                 id="name"
@@ -185,7 +185,7 @@ function switchMode() {
           <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium text-gray-400 mb-2">
-              <i class="fas fa-envelope mr-2"></i>E-Mail
+              <font-awesome-icon icon="envelope" class="mr-2" />E-Mail
             </label>
             <input
               id="email"
@@ -200,7 +200,7 @@ function switchMode() {
           <!-- Password -->
           <div>
             <label for="password" class="block text-sm font-medium text-gray-400 mb-2">
-              <i class="fas fa-lock mr-2"></i>Passwort
+              <font-awesome-icon icon="lock" class="mr-2" />Passwort
             </label>
             <input
               id="password"
@@ -220,11 +220,11 @@ function switchMode() {
             class="w-full bg-gradient-to-r from-game-cyan to-game-blue py-3 rounded-lg font-bold text-white shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
             <span v-if="!loading">
-              <i :class="`fas ${mode === 'login' ? 'fa-sign-in-alt' : 'fa-user-plus'} mr-2`"></i>
+              <font-awesome-icon :icon="mode === 'login' ? 'sign-in-alt' : 'user-plus'" class="mr-2" />
               {{ mode === 'login' ? 'Einloggen' : 'Registrieren' }}
             </span>
             <span v-else class="flex items-center justify-center gap-2">
-              <i class="fas fa-circle-notch fa-spin"></i>
+              <font-awesome-icon icon="circle-notch" class="fa-spin" />
               Lädt...
             </span>
           </button>
@@ -243,14 +243,14 @@ function switchMode() {
           type="button"
           class="w-full bg-gray-700 hover:bg-gray-600 py-3 rounded-lg font-medium text-white transition-all duration-200 border-2 border-gray-600 hover:border-gray-500"
         >
-          <i class="fas fa-user-secret mr-2 text-game-purple"></i>
+          <font-awesome-icon icon="user-secret" class="mr-2 text-game-purple" />
           Als Gast fortfahren
         </button>
 
         <!-- Info Text -->
         <div class="mt-6 bg-gray-800 border border-gray-700 rounded-lg p-4">
           <div class="flex items-start gap-3">
-            <i class="fas fa-info-circle text-game-blue mt-0.5"></i>
+            <font-awesome-icon icon="info-circle" class="text-game-blue mt-0.5" />
             <div>
               <p class="text-sm text-gray-300 font-medium mb-1">Gast-Modus</p>
               <p class="text-xs text-gray-400">

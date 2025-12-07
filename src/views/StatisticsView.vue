@@ -195,7 +195,7 @@ function formatDateLong(dateString: string): string {
     <nav class="bg-gray-900 bg-opacity-80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-800">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
         <div class="flex items-center space-x-2">
-          <i class="fas fa-droplet text-game-cyan text-2xl"></i>
+          <font-awesome-icon icon="droplet" class="text-game-cyan text-2xl" />
           <h1 class="text-xl font-bold bg-gradient-to-r from-game-cyan to-game-blue bg-clip-text text-transparent">HydrateMate</h1>
         </div>
 
@@ -208,7 +208,7 @@ function formatDateLong(dateString: string): string {
 
         <div class="flex items-center space-x-4">
           <button @click="router.push('/dashboard')" class="text-gray-400 hover:text-white">
-            <i class="fas fa-arrow-left mr-2"></i>
+            <font-awesome-icon icon="arrow-left" class="mr-2" />
             Zurück
           </button>
         </div>
@@ -220,7 +220,7 @@ function formatDateLong(dateString: string): string {
       <!-- Header -->
       <div class="mb-8">
         <h2 class="text-3xl font-bold mb-2">
-          <i class="fas fa-chart-line text-game-cyan mr-3"></i>
+          <font-awesome-icon icon="chart-line" class="text-game-cyan mr-3" />
           Statistiken
         </h2>
         <p class="text-gray-400">Deine Trink-Performance der letzten 7 Tage</p>
@@ -240,7 +240,7 @@ function formatDateLong(dateString: string): string {
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-900/30 border border-red-700 rounded-xl p-8">
         <div class="flex items-center gap-3">
-          <i class="fas fa-exclamation-circle text-red-500 text-2xl"></i>
+          <font-awesome-icon icon="exclamation-circle" class="text-red-500 text-2xl" />
           <p class="text-red-300">{{ error }}</p>
         </div>
       </div>
@@ -256,7 +256,7 @@ function formatDateLong(dateString: string): string {
                 <p class="text-gray-400 text-sm">Durchschnitt</p>
                 <h3 class="text-3xl font-bold text-game-cyan">{{ totalStats.average }}<span class="text-lg">ml</span></h3>
               </div>
-              <i class="fas fa-chart-bar text-game-cyan text-2xl"></i>
+              <font-awesome-icon icon="chart-bar" class="text-game-cyan text-2xl" />
             </div>
             <p class="text-sm text-gray-400 mt-2">pro Tag</p>
           </div>
@@ -268,7 +268,7 @@ function formatDateLong(dateString: string): string {
                 <p class="text-gray-400 text-sm">Gesamt</p>
                 <h3 class="text-3xl font-bold text-game-blue">{{ totalStats.total }}<span class="text-lg">ml</span></h3>
               </div>
-              <i class="fas fa-droplet text-game-blue text-2xl"></i>
+              <font-awesome-icon icon="droplet" class="text-game-blue text-2xl" />
             </div>
             <p class="text-sm text-gray-400 mt-2">7 Tage</p>
           </div>
@@ -280,7 +280,7 @@ function formatDateLong(dateString: string): string {
                 <p class="text-gray-400 text-sm">Ziele erreicht</p>
                 <h3 class="text-3xl font-bold text-green-500">{{ totalStats.daysReached }}<span class="text-lg">/7</span></h3>
               </div>
-              <i class="fas fa-bullseye text-green-500 text-2xl"></i>
+              <font-awesome-icon icon="bullseye" class="text-green-500 text-2xl" />
             </div>
             <p class="text-sm text-gray-400 mt-2">Tage</p>
           </div>
@@ -292,7 +292,7 @@ function formatDateLong(dateString: string): string {
                 <p class="text-gray-400 text-sm">Bester Tag</p>
                 <h3 class="text-3xl font-bold text-game-purple">{{ totalStats.bestDay.consumedMl }}<span class="text-lg">ml</span></h3>
               </div>
-              <i class="fas fa-trophy text-yellow-500 text-2xl"></i>
+              <font-awesome-icon icon="trophy" class="text-yellow-500 text-2xl" />
             </div>
             <p class="text-sm text-gray-400 mt-2">{{ formatDate(totalStats.bestDay.date) }}</p>
           </div>
@@ -301,7 +301,7 @@ function formatDateLong(dateString: string): string {
         <!-- Bar Chart -->
         <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700 shadow-lg">
           <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
-            <i class="fas fa-chart-column text-game-purple"></i>
+            <font-awesome-icon icon="chart-column" class="text-game-purple" />
             Letzte 7 Tage
           </h3>
 
@@ -350,7 +350,7 @@ function formatDateLong(dateString: string): string {
                     class="absolute w-full flex justify-center"
                     :style="{ bottom: getBarHeight(day.goalMl) + '%' }"
                   >
-                    <i class="fas fa-check-circle text-green-500 text-lg"></i>
+                    <font-awesome-icon icon="check-circle" class="text-green-500 text-lg" />
                   </div>
                 </div>
 
@@ -392,7 +392,7 @@ function formatDateLong(dateString: string): string {
         <!-- Daily Details Table -->
         <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg">
           <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
-            <i class="fas fa-table text-game-blue"></i>
+            <font-awesome-icon icon="table" class="text-game-blue" />
             Tägliche Details
           </h3>
 
@@ -438,14 +438,14 @@ function formatDateLong(dateString: string): string {
                       v-if="day.percentage >= 100"
                       class="inline-flex items-center gap-1 bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-sm font-medium"
                     >
-                      <i class="fas fa-check-circle"></i>
+                      <font-awesome-icon icon="check-circle" />
                       Erreicht
                     </span>
                     <span
                       v-else
                       class="inline-flex items-center gap-1 bg-gray-700 text-gray-400 px-3 py-1 rounded-full text-sm"
                     >
-                      <i class="fas fa-minus-circle"></i>
+                      <font-awesome-icon icon="minus-circle" />
                       {{ day.goalMl - day.consumedMl }}ml fehlen
                     </span>
                   </td>

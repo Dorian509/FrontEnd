@@ -58,7 +58,7 @@ async function load() {
       if (savedData) {
         data.value = JSON.parse(savedData)
       } else {
-        // Initialize default data for new guest
+        // Initialize default data for new gmacuest
         data.value = {
           consumedMl: 0,
           goalMl: 2500,
@@ -341,7 +341,7 @@ function getSourceLabel(source: Source): string {
     <nav class="bg-gray-900 bg-opacity-80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-800">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
         <div class="flex items-center space-x-2">
-          <i class="fas fa-droplet text-game-cyan text-2xl"></i>
+          <font-awesome-icon icon="droplet" class="text-game-cyan text-2xl" />
           <h1 class="text-xl font-bold bg-gradient-to-r from-game-cyan to-game-blue bg-clip-text text-transparent">HydrateMate</h1>
         </div>
 
@@ -351,13 +351,13 @@ function getSourceLabel(source: Source): string {
           <router-link to="/history" class="hover:text-game-cyan transition">Verlauf</router-link>
           <router-link to="/settings" class="hover:text-game-cyan transition">Einstellungen</router-link>
           <button @click="logout" class="hover:text-red-500 transition">
-            <i class="fas fa-sign-out-alt mr-2"></i>Abmelden
+            <font-awesome-icon icon="sign-out-alt" class="mr-2" />Abmelden
           </button>
         </div>
 
         <div class="flex items-center space-x-4">
           <div class="relative">
-            <i class="fas fa-bell text-gray-400 hover:text-white cursor-pointer"></i>
+            <font-awesome-icon icon="bell" class="text-gray-400 hover:text-white cursor-pointer" />
             <span class="absolute -top-1 -right-1 bg-game-pink text-xs rounded-full h-4 w-4 flex items-center justify-center">2</span>
           </div>
           <div class="flex items-center space-x-2 bg-gray-800 rounded-full pl-2 pr-4 py-1 cursor-pointer hover:bg-gray-700 transition">
@@ -365,7 +365,7 @@ function getSourceLabel(source: Source): string {
               'h-8 w-8 rounded-full flex items-center justify-center',
               isGuest ? 'bg-amber-500' : 'bg-game-cyan'
             ]">
-              <i :class="['text-sm', isGuest ? 'fas fa-user-secret' : 'fas fa-user']"></i>
+              <font-awesome-icon :icon="isGuest ? 'user-secret' : 'user'" class="text-sm" />
             </div>
             <span class="font-medium">{{ user?.name || 'Gast' }}</span>
           </div>
@@ -381,7 +381,7 @@ function getSourceLabel(source: Source): string {
       <!-- Welcome Section -->
       <div class="mb-8">
         <h2 class="text-3xl font-bold mb-2">Willkommen zurück, <span class="text-game-cyan">{{ user?.name || 'Gast' }}</span>!</h2>
-        <p class="text-gray-400">Erreiche dein Tagesziel und bleib hydriert <i class="fas fa-droplet text-game-cyan"></i></p>
+        <p class="text-gray-400">Erreiche dein Tagesziel und bleib hydriert <font-awesome-icon icon="droplet" class="text-game-cyan" /></p>
       </div>
 
       <!-- Toast Notification -->
@@ -418,7 +418,7 @@ function getSourceLabel(source: Source): string {
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-900/30 border border-red-700 rounded-xl p-8">
         <div class="flex items-center gap-3">
-          <i class="fas fa-exclamation-triangle text-red-400 text-3xl"></i>
+          <font-awesome-icon icon="exclamation-triangle" class="text-red-400 text-3xl" />
           <p class="text-red-400 font-semibold">{{ error }}</p>
         </div>
       </div>
@@ -432,9 +432,9 @@ function getSourceLabel(source: Source): string {
               <h1 class="text-4xl font-bold bg-gradient-to-r from-game-cyan to-game-blue bg-clip-text text-transparent mb-2">
                 Dein heutiges Ziel
               </h1>
-              <p class="text-gray-400">Bleib am Ball und erreiche dein Tagesziel! <i class="fas fa-bullseye text-game-blue"></i></p>
+              <p class="text-gray-400">Bleib am Ball und erreiche dein Tagesziel! <font-awesome-icon icon="bullseye" class="text-game-blue" /></p>
             </div>
-            <div class="text-4xl animate-bounce"><i class="fas fa-droplet text-game-cyan"></i></div>
+            <div class="text-4xl animate-bounce"><font-awesome-icon icon="droplet" class="text-game-cyan" /></div>
           </div>
 
           <!-- Progress Stats -->
@@ -445,7 +445,7 @@ function getSourceLabel(source: Source): string {
                   <p class="text-gray-400 text-sm">Getrunken</p>
                   <h3 class="text-3xl font-bold text-game-cyan transition-all duration-300">{{ data?.consumedMl }}<span class="text-lg">ml</span></h3>
                 </div>
-                <i class="fas fa-glass-water text-game-cyan text-2xl"></i>
+                <font-awesome-icon icon="glass-water" class="text-game-cyan text-2xl" />
               </div>
             </div>
 
@@ -455,7 +455,7 @@ function getSourceLabel(source: Source): string {
                   <p class="text-gray-400 text-sm">Tagesziel</p>
                   <h3 class="text-3xl font-bold text-game-blue transition-all duration-300">{{ data?.goalMl }}<span class="text-lg">ml</span></h3>
                 </div>
-                <i class="fas fa-bullseye text-game-blue text-2xl"></i>
+                <font-awesome-icon icon="bullseye" class="text-game-blue text-2xl" />
               </div>
             </div>
 
@@ -465,7 +465,7 @@ function getSourceLabel(source: Source): string {
                   <p class="text-gray-400 text-sm">Noch übrig</p>
                   <h3 class="text-3xl font-bold text-game-purple transition-all duration-300">{{ data?.remainingMl }}<span class="text-lg">ml</span></h3>
                 </div>
-                <i class="fas fa-hourglass-half text-game-purple text-2xl"></i>
+                <font-awesome-icon icon="hourglass-half" class="text-game-purple text-2xl" />
               </div>
             </div>
           </div>
@@ -482,10 +482,10 @@ function getSourceLabel(source: Source): string {
             </div>
             <div class="flex justify-between text-gray-400 text-sm font-medium">
               <span class="flex items-center gap-2">
-                <i class="fas fa-star text-yellow-500"></i> {{ pct(data?.consumedMl ?? 0, data?.goalMl ?? 0) }}% erreicht
+                <font-awesome-icon icon="star" class="text-yellow-500" /> {{ pct(data?.consumedMl ?? 0, data?.goalMl ?? 0) }}% erreicht
               </span>
               <span class="flex items-center gap-2">
-                <i class="fas fa-fire text-yellow-500"></i> 3 Tage Streak
+                <font-awesome-icon icon="fire" class="text-yellow-500" /> 3 Tage Streak
               </span>
             </div>
           </div>
@@ -498,7 +498,7 @@ function getSourceLabel(source: Source): string {
             <!-- Quick Add - Kombiniert -->
             <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg">
               <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <i class="fas fa-plus-circle text-game-pink"></i>
+                <font-awesome-icon icon="plus-circle" class="text-game-pink" />
                 Schnell hinzufügen
               </h3>
               <p class="text-gray-400 text-sm mb-6">Klicke auf einen Button um Wasser hinzuzufügen</p>
@@ -513,7 +513,7 @@ function getSourceLabel(source: Source): string {
                     class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-cyan hover:to-game-blue transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105"
                 >
                   <div class="flex flex-col items-center gap-2">
-                    <i :class="`fas ${config.icon} text-2xl text-game-cyan group-hover:text-white transition-colors`"></i>
+                    <font-awesome-icon :icon="config.icon.replace('fa-', '')" class="text-2xl text-game-cyan group-hover:text-white transition-colors" />
                     <div class="text-xl font-bold text-white">{{ config.ml }}ml</div>
                     <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors">{{ config.label }}</div>
                   </div>
@@ -525,7 +525,7 @@ function getSourceLabel(source: Source): string {
                     class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-purple hover:to-game-pink transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105"
                 >
                   <div class="flex flex-col items-center gap-2">
-                    <i class="fas fa-plus text-2xl text-game-purple group-hover:text-white transition-colors"></i>
+                    <font-awesome-icon icon="plus" class="text-2xl text-game-purple group-hover:text-white transition-colors" />
                     <div class="text-xl font-bold text-game-purple group-hover:text-white transition-colors">200ml</div>
                     <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors">Schnell</div>
                   </div>
@@ -576,7 +576,7 @@ function getSourceLabel(source: Source): string {
             <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg">
               <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold flex items-center gap-2">
-                  <i class="fas fa-list text-game-cyan text-2xl"></i>
+                  <font-awesome-icon icon="list" class="text-game-cyan text-2xl" />
                   Heute getrunken
                 </h3>
                 <span class="bg-game-cyan bg-opacity-20 text-white-500 px-3 py-1 rounded-full text-sm font-semibold">
@@ -593,14 +593,14 @@ function getSourceLabel(source: Source): string {
                   <div class="flex items-center justify-between">
                     <div class="flex items-center gap-4">
                       <div :class="['h-12 w-12 rounded-full flex items-center justify-center', getIntakeIconClass(entry.source)]">
-                        <i :class="`fas ${getIntakeIcon(entry.source)} text-2xl`"></i>
+                        <font-awesome-icon :icon="getIntakeIcon(entry.source).replace('fa-', '')" class="text-2xl" />
                       </div>
                       <div>
                         <div class="font-bold text-white">{{ entry.volumeMl }} ml</div>
                         <div class="text-sm text-gray-400">{{ entry.timeAgo }} • {{ getSourceLabel(entry.source) }}</div>
                       </div>
                     </div>
-                    <i class="fas fa-check text-green-500 text-2xl"></i>
+                    <font-awesome-icon icon="check" class="text-green-500 text-2xl" />
                   </div>
                 </div>
               </transition-group>
@@ -617,18 +617,18 @@ function getSourceLabel(source: Source): string {
             <div v-if="profile" class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg">
               <div class="flex items-center justify-between mb-6">
                 <h3 class="font-bold text-lg flex items-center gap-2">
-                  <i class="fas fa-user text-game-cyan text-2xl"></i>
+                  <font-awesome-icon icon="user" class="text-game-cyan text-2xl" />
                   Dein Profil
                 </h3>
                 <button @click="router.push('/settings')" class="text-gray-400 hover:text-game-cyan transition">
-                  <i class="fas fa-edit text-xl"></i>
+                  <font-awesome-icon icon="edit" class="text-xl" />
                 </button>
               </div>
 
               <div class="space-y-3">
                 <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between items-center">
                   <span class="text-gray-400 flex items-center gap-2">
-                    <i class="fas fa-weight-scale text-game-purple"></i>
+                    <font-awesome-icon icon="weight-scale" class="text-game-purple" />
                     Gewicht
                   </span>
                   <span class="font-bold text-white">{{ profile.weightKg }} kg</span>
@@ -636,7 +636,7 @@ function getSourceLabel(source: Source): string {
 
                 <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between items-center">
                   <span class="text-gray-400 flex items-center gap-2">
-                    <i class="fas fa-running text-game-blue"></i>
+                    <font-awesome-icon icon="running" class="text-game-blue" />
                     Aktivität
                   </span>
                   <span class="font-bold text-white">{{ activityLabels[profile.activityLevel] }}</span>
@@ -644,7 +644,7 @@ function getSourceLabel(source: Source): string {
 
                 <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between items-center">
                   <span class="text-gray-400 flex items-center gap-2">
-                    <i class="fas fa-temperature-high text-game-pink"></i>
+                    <font-awesome-icon icon="temperature-high" class="text-game-pink" />
                     Klima
                   </span>
                   <span class="font-bold text-white">{{ climateLabels[profile.climate] }}</span>
@@ -655,7 +655,7 @@ function getSourceLabel(source: Source): string {
             <!-- Goal Calculation -->
             <div v-if="profile" class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg">
               <h3 class="font-bold mb-4 text-lg flex items-center gap-2">
-                <i class="fas fa-calculator text-game-blue text-2xl"></i>
+                <font-awesome-icon icon="calculator" class="text-game-blue text-2xl" />
                 Ziel-Berechnung
               </h3>
 
@@ -667,7 +667,7 @@ function getSourceLabel(source: Source): string {
 
                 <div v-if="profile.activityLevel === 'MEDIUM'" class="bg-gray-800 rounded-lg p-3 border border-gray-700 flex justify-between">
                   <span class="text-gray-400 flex items-center gap-2">
-                    <i class="fas fa-plus text-game-blue"></i>
+                    <font-awesome-icon icon="plus" class="text-game-blue" />
                     Aktivität Bonus
                   </span>
                   <span class="font-bold text-game-blue">+250 ml</span>
@@ -675,7 +675,7 @@ function getSourceLabel(source: Source): string {
 
                 <div v-if="profile.activityLevel === 'HIGH'" class="bg-gray-800 rounded-lg p-3 border border-gray-700 flex justify-between">
                   <span class="text-gray-400 flex items-center gap-2">
-                    <i class="fas fa-plus text-game-blue"></i>
+                    <font-awesome-icon icon="plus" class="text-game-blue" />
                     Aktivität Bonus
                   </span>
                   <span class="font-bold text-game-blue">+500 ml</span>
@@ -683,7 +683,7 @@ function getSourceLabel(source: Source): string {
 
                 <div v-if="profile.climate === 'HOT'" class="bg-gray-800 rounded-lg p-3 border border-gray-700 flex justify-between">
                   <span class="text-gray-400 flex items-center gap-2">
-                    <i class="fas fa-plus text-orange-500"></i>
+                    <font-awesome-icon icon="plus" class="text-orange-500" />
                     Klima Bonus
                   </span>
                   <span class="font-bold text-orange-500">+500 ml</span>
@@ -699,14 +699,14 @@ function getSourceLabel(source: Source): string {
             <!-- Achievements -->
             <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg">
               <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <i class="fas fa-trophy text-yellow-500 text-2xl"></i>
+                <font-awesome-icon icon="trophy" class="text-yellow-500 text-2xl" />
                 Erfolge
               </h3>
 
               <div class="space-y-4">
                 <div class="flex items-center space-x-3">
                   <div class="h-12 w-12 rounded-full bg-yellow-500/20 flex items-center justify-center relative">
-                    <i class="fas fa-fire text-yellow-500 text-xl relative z-10"></i>
+                    <font-awesome-icon icon="fire" class="text-yellow-500 text-xl relative z-10" />
                   </div>
                   <div>
                     <p class="font-medium">3 Tage Streak</p>
@@ -716,7 +716,7 @@ function getSourceLabel(source: Source): string {
 
                 <div class="flex items-center space-x-3">
                   <div class="h-12 w-12 rounded-full bg-blue-500/20 flex items-center justify-center relative">
-                    <i class="fas fa-star text-blue-500 text-xl relative z-10"></i>
+                    <font-awesome-icon icon="star" class="text-blue-500 text-xl relative z-10" />
                   </div>
                   <div>
                     <p class="font-medium">Ziel erreicht</p>
@@ -726,7 +726,7 @@ function getSourceLabel(source: Source): string {
 
                 <div class="flex items-center space-x-3">
                   <div class="h-12 w-12 rounded-full bg-purple-500/20 flex items-center justify-center relative">
-                    <i class="fas fa-medal text-purple-500 text-xl relative z-10"></i>
+                    <font-awesome-icon icon="medal" class="text-purple-500 text-xl relative z-10" />
                   </div>
                   <div>
                     <p class="font-medium">Hydration Hero</p>
@@ -743,7 +743,7 @@ function getSourceLabel(source: Source): string {
             <!-- Tips Card -->
             <div class="bg-gradient-to-br from-amber-900/40 to-orange-900/40 rounded-xl p-6 border border-amber-700/50 shadow-lg">
               <h3 class="font-bold mb-3 text-lg flex items-center gap-2">
-                <i class="fas fa-lightbulb text-yellow-500 text-2xl"></i>
+                <font-awesome-icon icon="lightbulb" class="text-yellow-500 text-2xl" />
                 Tipp des Tages
               </h3>
               <p class="text-sm text-gray-300 leading-relaxed">
@@ -761,7 +761,7 @@ function getSourceLabel(source: Source): string {
             <!-- Branding -->
             <div>
               <div class="flex items-center space-x-2 mb-4">
-                <i class="fas fa-droplet text-game-cyan text-2xl"></i>
+                <font-awesome-icon icon="droplet" class="text-game-cyan text-2xl" />
                 <h3 class="text-xl font-bold bg-gradient-to-r from-game-cyan to-game-blue bg-clip-text text-transparent">HydrateMate</h3>
               </div>
               <p class="text-gray-400 text-sm">Dein persönlicher Trink-Tracker für ein gesünderes Leben.</p>
@@ -814,7 +814,7 @@ function getSourceLabel(source: Source): string {
 
           <!-- Copyright -->
           <div class="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 text-sm">
-            © 2025 HydrateMate. Stay hydrated, stay winning! <i class="fas fa-droplet text-game-cyan"></i>
+            © 2025 HydrateMate. Stay hydrated, stay winning! <font-awesome-icon icon="droplet" class="text-game-cyan" />
           </div>
         </div>
       </footer>
