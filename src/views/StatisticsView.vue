@@ -8,6 +8,8 @@ const router = useRouter()
 const { user, isGuest, getAuthHeaders } = useAuth()
 
 type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS'
+type ActivityLevel = 'LOW' | 'MEDIUM' | 'HIGH'
+type Climate = 'NORMAL' | 'HOT'
 
 interface Intake {
   id: number
@@ -24,10 +26,18 @@ interface DayStats {
   percentage: number
 }
 
+interface Profile {
+  id: number
+  weightKg: number
+  activityLevel: ActivityLevel
+  climate: Climate
+}
+
 const stats = ref<DayStats[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 const goalMl = ref(2500) // Default goal
+const profile = ref<Profile | null>(null)
 
 // Berechne Gesamt-Statistiken
 const totalStats = computed(() => {
@@ -51,19 +61,62 @@ onMounted(async () => {
   await loadStats()
 })
 
+// Berechne Tagesziel basierend auf Profil
+function calculateDailyGoal(profileData: Profile): number {
+  const baseGoal = profileData.weightKg * 35
+  let activityBonus = 0
+  let climateBonus = 0
+
+  if (profileData.activityLevel === 'MEDIUM') activityBonus = 250
+  if (profileData.activityLevel === 'HIGH') activityBonus = 500
+  if (profileData.climate === 'HOT') climateBonus = 500
+
+  const total = baseGoal + activityBonus + climateBonus
+  console.log('📊 Calculated daily goal:', {
+    weight: profileData.weightKg,
+    baseGoal,
+    activityBonus,
+    climateBonus,
+    total
+  })
+
+  return total
+}
+
 async function loadGoal() {
   try {
-    if (!isGuest.value && user.value?.id) {
+    if (isGuest.value) {
+      // Lade aus LocalStorage für Gast-Modus
+      const savedProfile = localStorage.getItem('guestProfile')
+      console.log('📥 Loading guest profile from LocalStorage:', savedProfile)
+
+      if (savedProfile) {
+        const guestProfile = JSON.parse(savedProfile)
+        profile.value = { id: 0, ...guestProfile }
+        goalMl.value = calculateDailyGoal(profile.value)
+        console.log('✅ Guest goal calculated:', goalMl.value, 'ml')
+      } else {
+        console.log('⚠️ No guest profile found, using default 2500ml')
+        goalMl.value = 2500
+      }
+    } else if (user.value?.id) {
+      // Lade von API für authentifizierte User
+      console.log('📡 Loading profile from API for user:', user.value.id)
       const res = await fetch(apiUrl(`/api/profile/${user.value.id}`), {
         headers: getAuthHeaders()
       })
       if (res.ok) {
-        const profile = await res.json()
-        goalMl.value = profile.goalMl || 2500
+        profile.value = await res.json()
+        goalMl.value = calculateDailyGoal(profile.value)
+        console.log('✅ User goal calculated:', goalMl.value, 'ml')
+      } else {
+        console.error('❌ Failed to load profile, HTTP', res.status)
+        goalMl.value = 2500
       }
     }
   } catch (e) {
-    console.error('Failed to load goal:', e)
+    console.error('❌ Failed to load goal:', e)
+    goalMl.value = 2500
   }
 }
 
@@ -154,9 +207,59 @@ function generateMockStats(): DayStats[] {
   return stats
 }
 
+// Berechne Y-Achsen Maximum (dynamisch basierend auf Daten)
+const yAxisMax = computed(() => {
+  if (stats.value.length === 0) return 3000
+
+  // Finde maximalen Wert (entweder consumed oder goal)
+  const maxConsumed = Math.max(...stats.value.map(s => s.consumedMl), 0)
+  const maxGoal = Math.max(...stats.value.map(s => s.goalMl), goalMl.value)
+  const dataMax = Math.max(maxConsumed, maxGoal)
+
+  // Runde auf nächste 500ml auf für schöne Y-Achse
+  const roundedMax = Math.ceil(dataMax / 500) * 500
+
+  // Minimum 3000ml für gute Darstellung
+  const finalMax = Math.max(roundedMax, 3000)
+
+  console.log('📊 Y-Axis calculation:', {
+    maxConsumed,
+    maxGoal,
+    dataMax,
+    roundedMax,
+    finalMax
+  })
+
+  return finalMax
+})
+
+// Y-Achsen Labels dynamisch berechnen
+const yAxisLabels = computed(() => {
+  const max = yAxisMax.value
+  return [
+    max,
+    Math.round(max * 0.75),
+    Math.round(max * 0.5),
+    Math.round(max * 0.25),
+    0
+  ]
+})
+
+// Ziellinie Position berechnen (in Prozent von unten)
+const goalLinePosition = computed(() => {
+  const percentage = (goalMl.value / yAxisMax.value) * 100
+  console.log('🎯 Goal line position:', {
+    goalMl: goalMl.value,
+    yAxisMax: yAxisMax.value,
+    percentage: percentage.toFixed(2) + '%'
+  })
+  return percentage
+})
+
 function getBarHeight(consumedMl: number): number {
-  const maxMl = Math.max(...stats.value.map(s => s.goalMl))
-  return Math.min(100, (consumedMl / maxMl) * 100)
+  // Berechne Höhe relativ zur Y-Achse (nicht zum Goal!)
+  const percentage = (consumedMl / yAxisMax.value) * 100
+  return Math.min(100, Math.max(0, percentage))
 }
 
 function getBarColor(percentage: number): string {
@@ -307,13 +410,13 @@ function formatDateLong(dateString: string): string {
 
           <!-- Chart -->
           <div class="relative h-80">
-            <!-- Y-Axis Labels -->
+            <!-- Y-Axis Labels (dynamisch) -->
             <div class="absolute left-0 top-0 bottom-8 w-12 flex flex-col justify-between text-xs text-gray-400 text-right pr-2">
-              <span>3000ml</span>
-              <span>2250ml</span>
-              <span>1500ml</span>
-              <span>750ml</span>
-              <span>0ml</span>
+              <span>{{ yAxisLabels[0] }}ml</span>
+              <span>{{ yAxisLabels[1] }}ml</span>
+              <span>{{ yAxisLabels[2] }}ml</span>
+              <span>{{ yAxisLabels[3] }}ml</span>
+              <span>{{ yAxisLabels[4] }}ml</span>
             </div>
 
             <!-- Bars Container -->
@@ -362,9 +465,14 @@ function formatDateLong(dateString: string): string {
               </div>
             </div>
 
-            <!-- Goal Line -->
-            <div class="absolute left-14 right-0 border-t-2 border-dashed border-gray-600" style="bottom: 33.33%;">
-              <span class="absolute -left-12 -top-3 text-xs text-gray-500">Ziel</span>
+            <!-- Goal Line (dynamisch positioniert) -->
+            <div
+              class="absolute left-14 right-0 border-t-2 border-dashed border-green-500 opacity-75"
+              :style="{ bottom: goalLinePosition + '%' }"
+            >
+              <span class="absolute -left-12 -top-3 text-xs text-green-500 font-medium bg-game-dark px-1 rounded">
+                Ziel: {{ goalMl }}ml
+              </span>
             </div>
           </div>
 
