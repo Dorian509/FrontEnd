@@ -333,6 +333,18 @@ function getIntakeIconClass(source: Source): string {
 function getSourceLabel(source: Source): string {
   return sourceConfig[source].label
 }
+
+async function handleLogout() {
+  console.log('🚪 Logging out...')
+
+  const result = logout()
+
+  if (result.success) {
+    console.log('✅ Logout successful, redirecting to login...')
+    await router.push('/login')
+    console.log('✅ Navigation to login complete')
+  }
+}
 </script>
 
 <template>
@@ -350,7 +362,7 @@ function getSourceLabel(source: Source): string {
           <router-link to="/statistics" class="hover:text-game-cyan transition">Statistiken</router-link>
           <router-link to="/history" class="hover:text-game-cyan transition">Verlauf</router-link>
           <router-link to="/settings" class="hover:text-game-cyan transition">Einstellungen</router-link>
-          <button @click="logout" class="hover:text-red-500 transition">
+          <button @click="handleLogout" class="hover:text-red-500 transition">
             <font-awesome-icon icon="sign-out-alt" class="mr-2" />Abmelden
           </button>
         </div>

@@ -195,6 +195,18 @@ function calcEstimatedGoal() {
 
 // Computed property für reaktive Goal-Berechnung
 const calculatedGoal = computed(() => calcEstimatedGoal())
+
+async function handleLogout() {
+  console.log('🚪 Logging out...')
+
+  const result = logout()
+
+  if (result.success) {
+    console.log('✅ Logout successful, redirecting to login...')
+    await router.push('/login')
+    console.log('✅ Navigation to login complete')
+  }
+}
 </script>
 
 <template>
@@ -485,7 +497,7 @@ const calculatedGoal = computed(() => calcEstimatedGoal())
 
             <!-- Logout Button -->
             <button
-              @click="logout"
+              @click="handleLogout"
               class="w-full bg-gray-700 hover:bg-red-600 py-3 rounded-lg font-medium text-white transition-all duration-200 flex items-center justify-center gap-2"
             >
               <font-awesome-icon icon="sign-out-alt" />

@@ -289,10 +289,13 @@ export function useAuth() {
 
   // Logout
   function logout() {
+    console.log('🚪 Logging out - clearing auth state')
     clearAuth()
-    // Router lazy holen und navigieren
-    const router = useRouter()
-    router.push('/login')
+    console.log('✅ Auth cleared successfully')
+
+    // WICHTIG: Keine Navigation hier! (useRouter funktioniert nicht in Composables)
+    // Die Komponente muss router.push('/login') aufrufen
+    return { success: true }
   }
 
   // Clear all auth data
