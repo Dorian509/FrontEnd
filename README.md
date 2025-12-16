@@ -6,6 +6,7 @@
 ![Vue](https://img.shields.io/badge/Vue-3.5-42b883)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![Frontend Tests](https://github.com/Dorian509/FrontEnd/workflows/Frontend%20CI/badge.svg)
 
 ## Inhaltsverzeichnis
 
@@ -372,6 +373,32 @@ DATABASE_URL=postgresql://user:pass@host:5432/db
 
 ## Testing
 
+### Unit & Component Tests
+
+```bash
+# Alle Tests ausführen
+npm test
+
+# Tests im Watch-Mode (Auto-Reload)
+npm run test:watch
+
+# Vitest UI im Browser
+npm run test:ui
+
+# Coverage Report generieren
+npm run test:coverage
+```
+
+### CI/CD
+
+Tests werden automatisch ausgeführt bei:
+- ✅ Push auf `main` Branch
+- ✅ Pull Requests auf `main`
+
+Status: ![Frontend Tests](https://github.com/Dorian509/FrontEnd/workflows/Frontend%20CI/badge.svg)
+
+### Type Check & Build
+
 ```bash
 # Type Check
 npm run type-check
@@ -381,9 +408,6 @@ npm run build
 
 # ESLint
 npm run lint
-
-# Manual Testing
-npm run dev
 ```
 
 ## Customization
