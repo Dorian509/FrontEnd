@@ -83,8 +83,21 @@ async function handleSubmit() {
   }
 }
 
-function handleGuestMode() {
-  continueAsGuest()
+async function handleGuestMode() {
+  console.log('🎭 Starting Guest Mode...')
+
+  try {
+    const result = continueAsGuest()
+
+    if (result.success) {
+      console.log('✅ Guest Mode activated, navigating to dashboard...')
+      await router.push('/dashboard')
+      console.log('✅ Navigation complete')
+    }
+  } catch (error) {
+    console.error('❌ Guest Mode error:', error)
+    error.value = 'Fehler beim Starten des Gast-Modus'
+  }
 }
 
 function switchMode() {

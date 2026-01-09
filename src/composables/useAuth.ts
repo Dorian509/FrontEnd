@@ -254,6 +254,8 @@ export function useAuth() {
 
   // Continue as Guest
   function continueAsGuest() {
+    console.log('🎭 Activating Guest Mode...')
+
     // Lösche bestehende Auth
     clearAuth()
 
@@ -282,9 +284,10 @@ export function useAuth() {
       localStorage.setItem(GUEST_HYDRATION_DATA_KEY, JSON.stringify(defaultHydrationData))
     }
 
-    // Router lazy holen und navigieren
-    const router = useRouter()
-    router.push('/dashboard')
+    console.log('✅ Guest Mode activated')
+
+    // KEIN router.push() hier - Komponente macht die Navigation
+    return { success: true }
   }
 
   // Logout
