@@ -1,11 +1,13 @@
 import { createRouter, createWebHistory, type Router } from 'vue-router'
-import Dashboard from '../pages/Dashboard.vue'
-import ProfileSetup from '../pages/ProfileSetup.vue'
-import Settings from '../pages/Settings.vue'
-import LoginView from '../views/LoginView.vue'
-import StatisticsView from '../views/StatisticsView.vue'
-import HistoryView from '../views/HistoryView.vue'
 import { useAuth } from '@/composables/useAuth'
+
+// Lazy Loading für bessere Performance und kleineren Initial Bundle
+const Dashboard = () => import('../pages/Dashboard.vue')
+const ProfileSetup = () => import('../pages/ProfileSetup.vue')
+const Settings = () => import('../pages/Settings.vue')
+const LoginView = () => import('../views/LoginView.vue')
+const StatisticsView = () => import('../views/StatisticsView.vue')
+const HistoryView = () => import('../views/HistoryView.vue')
 
 const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

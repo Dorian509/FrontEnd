@@ -22,6 +22,10 @@ const loading = ref(true)
 const error = ref<string | null>(null)
 const filter = ref<'all' | 'today' | 'week'>('all')
 
+// Delete Confirmation State
+const deleteConfirm = ref<IntakeEntry | null>(null)
+const deleting = ref(false)
+
 const sourceConfig: Record<Source, { label: string; icon: string; color: string }> = {
   SIP: { label: 'Schluck', icon: 'fa-droplet', color: 'game-cyan' },
   DOUBLE_SIP: { label: 'Doppel', icon: 'fa-droplet', color: 'game-blue' },
@@ -128,27 +132,50 @@ function getDayTotal(entries: IntakeEntry[]): number {
   return entries.reduce((sum, entry) => sum + entry.volumeMl, 0)
 }
 
-async function deleteEntry(entry: IntakeEntry) {
-  if (!confirm(`Eintrag ${entry.volumeMl}ml löschen?`)) return
+// Show confirmation modal
+function confirmDelete(entry: IntakeEntry) {
+  deleteConfirm.value = entry
+}
+
+// Actually delete the entry
+async function deleteEntry() {
+  if (!deleteConfirm.value) return
+
+  deleting.value = true
+  const entry = deleteConfirm.value
 
   try {
     if (isGuest.value) {
-      // Lösche aus LocalStorage
+      // Remove from local array
       history.value = history.value.filter(e => e.timestamp !== entry.timestamp)
+      // Update localStorage
       localStorage.setItem('guestHistory', JSON.stringify(history.value))
+      console.log('✅ Guest entry deleted locally')
     } else {
-      // API Call
+      // Delete via API
       const res = await fetch(apiUrl(`/api/intakes/${entry.id}`), {
         method: 'DELETE',
         headers: getAuthHeaders()
       })
 
-      if (!res.ok) throw new Error('Löschen fehlgeschlagen')
+      if (!res.ok) {
+        throw new Error(`Delete failed: ${res.status}`)
+      }
 
+      // Remove from local array
       history.value = history.value.filter(e => e.id !== entry.id)
+      console.log('✅ Entry deleted via API')
     }
+
+    // Success feedback
+    console.log('🗑️ Entry deleted successfully')
+
   } catch (e) {
-    alert('Fehler beim Löschen: ' + e)
+    console.error('❌ Delete failed:', e)
+    alert('Fehler beim Löschen. Bitte versuche es erneut.')
+  } finally {
+    deleteConfirm.value = null
+    deleting.value = false
   }
 }
 </script>
@@ -306,8 +333,9 @@ async function deleteEntry(entry: IntakeEntry) {
 
               <!-- Delete Button -->
               <button
-                @click="deleteEntry(entry)"
+                @click="confirmDelete(entry)"
                 class="opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-400 p-2"
+                aria-label="Eintrag löschen"
               >
                 <font-awesome-icon icon="trash" />
               </button>
@@ -317,4 +345,49 @@ async function deleteEntry(entry: IntakeEntry) {
       </div>
     </main>
   </div>
+
+  <!-- Delete Confirmation Modal -->
+  <teleport to="body">
+    <transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="deleteConfirm"
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+        @click.self="deleteConfirm = null"
+      >
+        <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-700 shadow-2xl">
+          <h3 class="text-xl font-bold mb-4">Eintrag löschen?</h3>
+          <p class="text-gray-300 mb-6">
+            Möchtest du wirklich <span class="font-bold text-game-cyan">{{ deleteConfirm.volumeMl }}ml</span>
+            von <span class="font-bold">{{ formatTime(deleteConfirm.timestamp) }}</span> löschen?
+            <br>
+            <span class="text-sm text-gray-400 mt-2 inline-block">Diese Aktion kann nicht rückgängig gemacht werden.</span>
+          </p>
+          <div class="flex gap-3">
+            <button
+              @click="deleteConfirm = null"
+              :disabled="deleting"
+              class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition disabled:opacity-50"
+            >
+              Abbrechen
+            </button>
+            <button
+              @click="deleteEntry"
+              :disabled="deleting"
+              class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              <span v-if="deleting">Lösche...</span>
+              <span v-else>Löschen</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </teleport>
 </template>

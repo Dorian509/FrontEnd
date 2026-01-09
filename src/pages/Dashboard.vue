@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { apiUrl, fetchWithRetry, parseJsonSafely } from '@/utils/api'
@@ -44,6 +44,42 @@ const intakeHistory = ref<IntakeEntry[]>([
   { volumeMl: 200, source: 'SIP', timeAgo: 'vor 2 Stunden', timestamp: new Date().toISOString() },
   { volumeMl: 500, source: 'GLASS', timeAgo: 'vor 4 Stunden', timestamp: new Date().toISOString() },
 ])
+
+// Goal Celebration State
+const celebrateGoal = ref(false)
+const hasShownCelebration = ref(false)
+
+// Watch für Goal Completion
+const goalReached = computed(() => {
+  if (!data.value) return false
+  const percentage = pct(data.value.consumedMl, data.value.goalMl)
+  return percentage >= 100
+})
+
+watch(goalReached, (newVal, oldVal) => {
+  // Trigger celebration nur wenn gerade erreicht UND noch nicht gezeigt
+  if (newVal && !oldVal && !hasShownCelebration.value) {
+    celebrateGoal.value = true
+    hasShownCelebration.value = true
+
+    console.log('🎉 Goal reached! Showing celebration')
+
+    // Vibration für Mobile
+    if (navigator.vibrate) {
+      navigator.vibrate([100, 50, 100, 50, 200])
+    }
+
+    // Auto-close nach 5 Sekunden
+    setTimeout(() => {
+      celebrateGoal.value = false
+    }, 5000)
+  }
+
+  // Reset celebration flag wenn unter 100%
+  if (!newVal && hasShownCelebration.value) {
+    hasShownCelebration.value = false
+  }
+})
 
 async function load() {
   loading.value = true
@@ -580,7 +616,9 @@ async function handleLogout() {
                     v-for="(config, source) in sourceConfig"
                     :key="source"
                     @click="addIntake(config.ml, source)"
-                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-cyan hover:to-game-blue transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105"
+                    :disabled="isAdding"
+                    :aria-label="`${config.ml} Milliliter ${config.label} hinzufügen`"
+                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-cyan hover:to-game-blue transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <div class="flex flex-col items-center gap-2">
                     <font-awesome-icon :icon="config.icon.replace('fa-', '')" class="text-2xl text-game-cyan group-hover:text-white transition-colors" />
@@ -592,7 +630,9 @@ async function handleLogout() {
                 <!-- Fixed Amount Buttons (200, 300, 500ml) -->
                 <button
                     @click="addIntake(200)"
-                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-purple hover:to-game-pink transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105"
+                    :disabled="isAdding"
+                    aria-label="200 Milliliter hinzufügen"
+                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-purple hover:to-game-pink transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <div class="flex flex-col items-center gap-2">
                     <font-awesome-icon icon="plus" class="text-2xl text-game-purple group-hover:text-white transition-colors" />
@@ -603,7 +643,9 @@ async function handleLogout() {
 
                 <button
                     @click="addIntake(300)"
-                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-blue hover:to-game-cyan transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105"
+                    :disabled="isAdding"
+                    aria-label="300 Milliliter hinzufügen"
+                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-blue hover:to-game-cyan transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <div class="flex flex-col items-center gap-2">
                     <i class="fas fa-plus text-2xl text-game-blue group-hover:text-white transition-colors"></i>
@@ -614,7 +656,9 @@ async function handleLogout() {
 
                 <button
                     @click="addIntake(500)"
-                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-pink hover:to-game-purple transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105"
+                    :disabled="isAdding"
+                    aria-label="500 Milliliter hinzufügen"
+                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-pink hover:to-game-purple transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <div class="flex flex-col items-center gap-2">
                     <i class="fas fa-plus text-2xl text-game-pink group-hover:text-white transition-colors"></i>
@@ -890,6 +934,72 @@ async function handleLogout() {
       </footer>
     </main>
   </div>
+
+  <!-- 🎉 Goal Celebration Modal -->
+  <teleport to="body">
+    <transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="transform scale-75 opacity-0"
+      enter-to-class="transform scale-100 opacity-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="transform scale-100 opacity-100"
+      leave-to-class="transform scale-75 opacity-0"
+    >
+      <div
+        v-if="celebrateGoal"
+        class="fixed inset-0 flex items-center justify-center z-50 p-4"
+        style="pointer-events: none;"
+      >
+        <div
+          class="bg-gradient-to-br from-green-900/95 to-emerald-900/95 backdrop-blur-lg rounded-2xl p-8 md:p-12 border-4 border-green-500 shadow-2xl max-w-md w-full"
+          style="pointer-events: auto;"
+        >
+          <div class="text-center">
+            <!-- Animated Trophy/Celebration Icon -->
+            <div class="text-7xl md:text-8xl mb-6 animate-bounce">
+              🎉
+            </div>
+
+            <!-- Title -->
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+              Tagesziel erreicht!
+            </h2>
+
+            <!-- Stats -->
+            <div v-if="data" class="mb-4">
+              <p class="text-2xl md:text-3xl font-bold text-green-300 mb-2">
+                {{ data.consumedMl }}ml / {{ data.goalMl }}ml
+              </p>
+              <div class="w-full bg-green-900/30 rounded-full h-3 mb-2">
+                <div
+                  class="bg-gradient-to-r from-green-400 to-emerald-400 h-3 rounded-full transition-all duration-500"
+                  :style="{ width: Math.min(pct(data.consumedMl, data.goalMl), 100) + '%' }"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Message -->
+            <p class="text-lg md:text-xl text-white/90 mb-6">
+              Fantastisch! Du hast dein Ziel geschafft! 💪
+            </p>
+
+            <!-- Close Button -->
+            <button
+              @click="celebrateGoal = false"
+              class="bg-gradient-to-r from-green-500 to-emerald-500 px-8 py-3 rounded-lg font-bold text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
+            >
+              Weiter so! 💪
+            </button>
+
+            <!-- Small close hint -->
+            <p class="text-xs text-white/50 mt-4">
+              Schließt automatisch in 5 Sekunden
+            </p>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </teleport>
 </template>
 
 <style scoped>
@@ -963,5 +1073,10 @@ async function handleLogout() {
 
 .list-move {
   transition: transform 0.3s ease;
+}
+
+/* Smooth Progress Bar Animation */
+.progress-fill {
+  transition: width 0.5s ease-out;
 }
 </style>
