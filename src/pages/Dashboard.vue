@@ -618,7 +618,7 @@ async function handleLogout() {
                     class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-cyan hover:to-game-blue transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <div class="flex flex-col items-center justify-center gap-2">
-                    <div class="text-3xl font-bold text-white">{{ config.ml }}ml</div>
+                    <div class="text-2xl font-bold text-white">{{ config.ml }}ml</div>
                     <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors uppercase tracking-wider">{{ config.label }}</div>
                   </div>
                 </button>
@@ -631,7 +631,7 @@ async function handleLogout() {
                     class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-blue hover:to-game-cyan transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <div class="flex flex-col items-center justify-center gap-2">
-                    <div class="text-3xl font-bold text-white">300ml</div>
+                    <div class="text-2xl font-bold text-white">300ml</div>
                     <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors uppercase tracking-wider">Schnell</div>
                   </div>
                 </button>
@@ -643,7 +643,7 @@ async function handleLogout() {
                     class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-pink hover:to-game-purple transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <div class="flex flex-col items-center justify-center gap-2">
-                    <div class="text-3xl font-bold text-white">500ml</div>
+                    <div class="text-2xl font-bold text-white">500ml</div>
                     <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors uppercase tracking-wider">Schnell</div>
                   </div>
                 </button>
