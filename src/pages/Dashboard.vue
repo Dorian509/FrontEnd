@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
-import { apiUrl } from '@/utils/api'
+import { apiUrl, fetchWithRetry, parseJsonSafely } from '@/utils/api'
 import GuestBanner from '@/components/GuestBanner.vue'
 
 const router = useRouter()
@@ -38,6 +38,7 @@ const loading = ref(true)
 const error = ref<string | null>(null)
 const toast = ref<string | null>(null)
 const isAdding = ref(false)
+const isWakingUp = ref(false)
 const intakeHistory = ref<IntakeEntry[]>([
   { volumeMl: 300, source: 'GLASS', timeAgo: 'vor 1 Stunde', timestamp: new Date().toISOString() },
   { volumeMl: 200, source: 'SIP', timeAgo: 'vor 2 Stunden', timestamp: new Date().toISOString() },
@@ -47,6 +48,7 @@ const intakeHistory = ref<IntakeEntry[]>([
 async function load() {
   loading.value = true
   error.value = null
+  isWakingUp.value = false
 
   try {
     if (isGuest.value) {
@@ -58,7 +60,7 @@ async function load() {
       if (savedData) {
         data.value = JSON.parse(savedData)
       } else {
-        // Initialize default data for new gmacuest
+        // Initialize default data for new guest
         data.value = {
           consumedMl: 0,
           goalMl: 2500,
@@ -86,15 +88,33 @@ async function load() {
         localStorage.setItem('guestStats', JSON.stringify(initialStats))
       }
     } else {
-      // Load from API for authenticated user
-      const res = await fetch(apiUrl(`/api/hydration/today/${user.value?.id || userId.value}`), {
-        headers: getAuthHeaders()
-      })
-      if (!res.ok) throw new Error('HTTP ' + res.status)
-      data.value = await res.json()
+      // Load from API for authenticated user with retry logic
+      console.log('📊 Loading dashboard for user:', user.value?.id)
+
+      // Show "waking up" message after first retry
+      const wakingUpTimeout = setTimeout(() => {
+        isWakingUp.value = true
+      }, 4000)
+
+      try {
+        const url = apiUrl(`/api/hydration/today/${user.value?.id || userId.value}`)
+        const response = await fetchWithRetry(url, {
+          headers: getAuthHeaders()
+        })
+
+        clearTimeout(wakingUpTimeout)
+        isWakingUp.value = false
+
+        data.value = await parseJsonSafely<HydrationData>(response)
+        console.log('✅ Dashboard data loaded')
+      } catch (fetchError) {
+        clearTimeout(wakingUpTimeout)
+        throw fetchError
+      }
     }
   } catch (e) {
     error.value = String(e)
+    console.error('❌ Dashboard load error:', e)
   } finally {
     loading.value = false
   }
@@ -107,11 +127,12 @@ async function loadSilently() {
       return
     }
 
-    const res = await fetch(apiUrl(`/api/hydration/today/${user.value?.id || userId.value}`), {
+    const url = apiUrl(`/api/hydration/today/${user.value?.id || userId.value}`)
+    const response = await fetchWithRetry(url, {
       headers: getAuthHeaders()
-    })
-    if (!res.ok) throw new Error('HTTP ' + res.status)
-    data.value = await res.json()
+    }, 3, 2000) // Fewer retries for silent reload
+
+    data.value = await parseJsonSafely<HydrationData>(response)
   } catch (e) {
     console.error('Silent load failed:', e)
     // Fehler nicht anzeigen, da optimistic update schon erfolgt ist
@@ -160,11 +181,12 @@ async function loadProfile() {
       return
     }
 
-    const res = await fetch(apiUrl(`/api/profile/${user.value?.id || userId.value}`), {
+    const url = apiUrl(`/api/profile/${user.value?.id || userId.value}`)
+    const response = await fetchWithRetry(url, {
       headers: getAuthHeaders()
     })
-    if (!res.ok) throw new Error('HTTP ' + res.status)
-    profile.value = await res.json()
+
+    profile.value = await parseJsonSafely<Profile>(response)
 
     // Aktualisiere das Tagesziel für authentifizierte User
     if (data.value && profile.value) {
@@ -232,7 +254,8 @@ async function addIntake(ml: number, source: Source | null = null) {
       updateGuestStats(ml)
     } else {
       // 4b. USER MODE: API Call im Hintergrund (ohne loading state!)
-      const res = await fetch(apiUrl('/api/intakes'), {
+      const url = apiUrl('/api/intakes')
+      await fetchWithRetry(url, {
         method: 'POST',
         headers: {
           ...getAuthHeaders(),
@@ -243,9 +266,7 @@ async function addIntake(ml: number, source: Source | null = null) {
           volumeMl: ml,
           source: usedSource
         })
-      })
-
-      if (!res.ok) throw new Error('HTTP ' + res.status)
+      }, 3, 2000) // Fewer retries for adding intake
 
       // 5. Stilles Update im Hintergrund - KEIN loading state
       await loadSilently()
@@ -419,19 +440,59 @@ async function handleLogout() {
 
       <!-- Loading State -->
       <div v-if="loading" class="space-y-8">
-        <div class="h-80 bg-gray-800 animate-pulse rounded-xl"></div>
-        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <div class="h-56 bg-gray-800 animate-pulse rounded-xl"></div>
-          <div class="h-56 bg-gray-800 animate-pulse rounded-xl"></div>
-          <div class="h-56 bg-gray-800 animate-pulse rounded-xl"></div>
+        <!-- Cold Start Notice -->
+        <div v-if="isWakingUp && !isGuest" class="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 rounded-xl p-8 border border-blue-700/50 shadow-lg">
+          <div class="text-center">
+            <div class="inline-block mb-4">
+              <div class="loading-spinner"></div>
+            </div>
+            <h3 class="text-2xl font-bold mb-2">🌅 Backend wird aufgeweckt...</h3>
+            <p class="text-gray-300 mb-4">
+              Das Backend war inaktiv und startet gerade.
+            </p>
+            <p class="text-sm text-gray-400">
+              Dies kann bis zu 2 Minuten dauern (Render Free Tier).
+              <br>
+              Bitte warten Sie, die Seite lädt automatisch.
+            </p>
+            <div class="progress-dots mt-6">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Regular Loading Skeleton -->
+        <div v-else class="space-y-8">
+          <div class="h-80 bg-gray-800 animate-pulse rounded-xl"></div>
+          <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="h-56 bg-gray-800 animate-pulse rounded-xl"></div>
+            <div class="h-56 bg-gray-800 animate-pulse rounded-xl"></div>
+            <div class="h-56 bg-gray-800 animate-pulse rounded-xl"></div>
+          </div>
         </div>
       </div>
 
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-900/30 border border-red-700 rounded-xl p-8">
-        <div class="flex items-center gap-3">
-          <font-awesome-icon icon="exclamation-triangle" class="text-red-400 text-3xl" />
-          <p class="text-red-400 font-semibold">{{ error }}</p>
+        <div class="text-center">
+          <font-awesome-icon icon="exclamation-triangle" class="text-red-400 text-5xl mb-4" />
+          <h3 class="text-2xl font-bold mb-3">Fehler beim Laden</h3>
+          <p class="text-red-400 font-semibold mb-6 max-w-2xl mx-auto">{{ error }}</p>
+
+          <div class="flex gap-4 justify-center">
+            <button
+              @click="load()"
+              class="bg-gradient-to-r from-game-cyan to-game-blue px-8 py-3 rounded-lg font-bold text-white shadow-lg hover:shadow-2xl hover:scale-105 transition-all"
+            >
+              🔄 Erneut versuchen
+            </button>
+            <button
+              @click="router.push('/login')"
+              class="bg-gray-700 hover:bg-gray-600 px-8 py-3 rounded-lg font-bold text-white transition"
+            >
+              🚪 Zurück zum Login
+            </button>
+          </div>
         </div>
       </div>
 
@@ -832,6 +893,46 @@ async function handleLogout() {
 </template>
 
 <style scoped>
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(59, 130, 246, 0.1);
+  border-top-color: rgb(59, 130, 246);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.progress-dots span {
+  width: 8px;
+  height: 8px;
+  background: rgb(59, 130, 246);
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.progress-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.progress-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
 .list-enter-active {
   transition: all 0.3s ease-out;
 }
