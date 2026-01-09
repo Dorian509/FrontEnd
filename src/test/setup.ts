@@ -7,13 +7,13 @@
 import { vi } from 'vitest'
 
 // Mock für import.meta.env
-globalThis.import = {
-  meta: {
-    env: {
-      VITE_API_URL: 'http://localhost:3000'
-    }
-  }
-} as any
+Object.defineProperty(import.meta, 'env', {
+  value: {
+    VITE_API_URL: ''  // Leer = relative URLs für Tests
+  },
+  writable: true,
+  configurable: true
+})
 
 // Mock localStorage
 const localStorageMock = (() => {

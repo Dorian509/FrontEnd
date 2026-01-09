@@ -60,7 +60,7 @@ describe('useAuth Composable - Async Tests mit fetch-Mock', () => {
 
     // Prüfe dass fetch mit korrekten Parametern aufgerufen wurde
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      '/api/auth/login',
+      'https://hydratemate-backend.onrender.com/api/auth/login',
       expect.objectContaining({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -137,7 +137,7 @@ describe('useAuth Composable - Async Tests mit fetch-Mock', () => {
 
     // Prüfe dass fetch mit korrekten Parametern aufgerufen wurde
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      '/api/auth/register',
+      'https://hydratemate-backend.onrender.com/api/auth/register',
       expect.objectContaining({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
