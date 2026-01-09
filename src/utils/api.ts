@@ -6,7 +6,11 @@
  * - Production: Uses VITE_API_URL from environment variables
  */
 
-const API_BASE = import.meta.env.VITE_API_URL || ''
+const API_BASE = import.meta.env.VITE_API_URL || 'https://hydratemate-backend.onrender.com'
+
+// Log API Base on startup
+console.log('🌐 API_BASE configured:', API_BASE)
+console.log('📝 VITE_API_URL env var:', import.meta.env.VITE_API_URL || 'NOT SET (using fallback)')
 
 /**
  * Constructs full API URL for the given path
