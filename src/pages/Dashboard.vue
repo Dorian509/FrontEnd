@@ -590,9 +590,6 @@ async function handleLogout() {
               <span class="flex items-center gap-2">
                 <font-awesome-icon icon="star" class="text-yellow-500" /> {{ pct(data?.consumedMl ?? 0, data?.goalMl ?? 0) }}% erreicht
               </span>
-              <span class="flex items-center gap-2">
-                <font-awesome-icon icon="fire" class="text-yellow-500" /> 3 Tage Streak
-              </span>
             </div>
           </div>
         </div>
@@ -620,37 +617,22 @@ async function handleLogout() {
                     :aria-label="`${config.ml} Milliliter ${config.label} hinzufügen`"
                     class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-cyan hover:to-game-blue transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  <div class="flex flex-col items-center gap-2">
-                    <font-awesome-icon :icon="config.icon.replace('fa-', '')" class="text-2xl text-game-cyan group-hover:text-white transition-colors" />
-                    <div class="text-xl font-bold text-white">{{ config.ml }}ml</div>
-                    <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors">{{ config.label }}</div>
+                  <div class="flex flex-col items-center justify-center gap-2">
+                    <div class="text-3xl font-bold text-white">{{ config.ml }}ml</div>
+                    <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors uppercase tracking-wider">{{ config.label }}</div>
                   </div>
                 </button>
 
-                <!-- Fixed Amount Buttons (200, 300, 500ml) -->
-                <button
-                    @click="addIntake(200)"
-                    :disabled="isAdding"
-                    aria-label="200 Milliliter hinzufügen"
-                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-purple hover:to-game-pink transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                >
-                  <div class="flex flex-col items-center gap-2">
-                    <font-awesome-icon icon="plus" class="text-2xl text-game-purple group-hover:text-white transition-colors" />
-                    <div class="text-xl font-bold text-game-purple group-hover:text-white transition-colors">200ml</div>
-                    <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors">Schnell</div>
-                  </div>
-                </button>
-
+                <!-- Fixed Amount Buttons (300, 500ml) -->
                 <button
                     @click="addIntake(300)"
                     :disabled="isAdding"
                     aria-label="300 Milliliter hinzufügen"
                     class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-blue hover:to-game-cyan transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  <div class="flex flex-col items-center gap-2">
-                    <i class="fas fa-plus text-2xl text-game-blue group-hover:text-white transition-colors"></i>
-                    <div class="text-xl font-bold text-game-blue group-hover:text-white transition-colors">300ml</div>
-                    <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors">Schnell</div>
+                  <div class="flex flex-col items-center justify-center gap-2">
+                    <div class="text-3xl font-bold text-white">300ml</div>
+                    <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors uppercase tracking-wider">Schnell</div>
                   </div>
                 </button>
 
@@ -660,10 +642,9 @@ async function handleLogout() {
                     aria-label="500 Milliliter hinzufügen"
                     class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-pink hover:to-game-purple transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  <div class="flex flex-col items-center gap-2">
-                    <i class="fas fa-plus text-2xl text-game-pink group-hover:text-white transition-colors"></i>
-                    <div class="text-xl font-bold text-game-pink group-hover:text-white transition-colors">500ml</div>
-                    <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors">Schnell</div>
+                  <div class="flex flex-col items-center justify-center gap-2">
+                    <div class="text-3xl font-bold text-white">500ml</div>
+                    <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors uppercase tracking-wider">Schnell</div>
                   </div>
                 </button>
               </div>
@@ -818,16 +799,6 @@ async function handleLogout() {
               </h3>
 
               <div class="space-y-4">
-                <div class="flex items-center space-x-3">
-                  <div class="h-12 w-12 rounded-full bg-yellow-500/20 flex items-center justify-center relative">
-                    <font-awesome-icon icon="fire" class="text-yellow-500 text-xl relative z-10" />
-                  </div>
-                  <div>
-                    <p class="font-medium">3 Tage Streak</p>
-                    <p class="text-xs text-gray-400">Weiter so!</p>
-                  </div>
-                </div>
-
                 <div class="flex items-center space-x-3">
                   <div class="h-12 w-12 rounded-full bg-blue-500/20 flex items-center justify-center relative">
                     <font-awesome-icon icon="star" class="text-blue-500 text-xl relative z-10" />
