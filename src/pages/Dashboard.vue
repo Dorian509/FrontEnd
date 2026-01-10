@@ -39,11 +39,7 @@ const error = ref<string | null>(null)
 const toast = ref<string | null>(null)
 const isAdding = ref(false)
 const isWakingUp = ref(false)
-const intakeHistory = ref<IntakeEntry[]>([
-  { volumeMl: 300, source: 'GLASS', timeAgo: 'vor 1 Stunde', timestamp: new Date().toISOString() },
-  { volumeMl: 200, source: 'SIP', timeAgo: 'vor 2 Stunden', timestamp: new Date().toISOString() },
-  { volumeMl: 500, source: 'GLASS', timeAgo: 'vor 4 Stunden', timestamp: new Date().toISOString() },
-])
+const intakeHistory = ref<IntakeEntry[]>([])
 
 // Goal Celebration State
 const celebrateGoal = ref(false)
