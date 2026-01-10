@@ -41,12 +41,21 @@ const profile = ref<Profile | null>(null)
 
 // Berechne Gesamt-Statistiken
 const totalStats = computed(() => {
+  if (stats.value.length === 0) {
+    return {
+      total: 0,
+      average: 0,
+      daysReached: 0,
+      bestDay: { consumedMl: 0, date: '', goalMl: 0, percentage: 0 }
+    }
+  }
+
   const total = stats.value.reduce((sum, day) => sum + day.consumedMl, 0)
-  const average = stats.value.length > 0 ? Math.round(total / stats.value.length) : 0
+  const average = Math.round(total / stats.value.length)
   const daysReached = stats.value.filter(day => day.percentage >= 100).length
   const bestDay = stats.value.reduce((max, day) =>
     day.consumedMl > max.consumedMl ? day : max
-  , { consumedMl: 0, date: '', goalMl: 0, percentage: 0 })
+  )
 
   return {
     total,
@@ -257,9 +266,14 @@ const goalLinePosition = computed(() => {
 })
 
 function getBarHeight(consumedMl: number): number {
+  if (consumedMl === 0) return 0
+
   // Berechne Höhe relativ zur Y-Achse (nicht zum Goal!)
   const percentage = (consumedMl / yAxisMax.value) * 100
-  return Math.min(100, Math.max(0, percentage))
+
+  // Mindesthöhe von 2% damit der Bar sichtbar bleibt
+  const minHeight = 2
+  return Math.min(100, Math.max(minHeight, percentage))
 }
 
 function getBarColor(percentage: number): string {
@@ -346,6 +360,19 @@ function formatDateLong(dateString: string): string {
           <font-awesome-icon icon="exclamation-circle" class="text-red-500 text-2xl" />
           <p class="text-red-300">{{ error }}</p>
         </div>
+      </div>
+
+      <!-- Empty State -->
+      <div v-else-if="stats.length === 0" class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-12 border border-gray-700 text-center">
+        <font-awesome-icon icon="chart-line" class="text-gray-600 text-6xl mb-4" />
+        <h3 class="text-xl font-bold text-gray-400 mb-2">Noch keine Statistiken</h3>
+        <p class="text-gray-500 mb-6">Füge Wasser hinzu um deine Statistiken zu sehen</p>
+        <button
+          @click="router.push('/dashboard')"
+          class="bg-gradient-to-r from-game-cyan to-game-blue px-6 py-3 rounded-lg font-bold hover:scale-105 transition"
+        >
+          Zum Dashboard
+        </button>
       </div>
 
       <!-- Statistics Content -->
@@ -447,13 +474,13 @@ function formatDateLong(dateString: string): string {
                     </div>
                   </div>
 
-                  <!-- Goal Line -->
+                  <!-- Goal Reached Icon (positioned at goal line level) -->
                   <div
                     v-if="day.consumedMl >= day.goalMl"
-                    class="absolute w-full flex justify-center"
-                    :style="{ bottom: getBarHeight(day.goalMl) + '%' }"
+                    class="absolute w-full flex justify-center pointer-events-none"
+                    :style="{ bottom: goalLinePosition + '%' }"
                   >
-                    <font-awesome-icon icon="check-circle" class="text-green-500 text-lg" />
+                    <font-awesome-icon icon="check-circle" class="text-green-500 text-lg drop-shadow-lg" />
                   </div>
                 </div>
 

@@ -56,6 +56,15 @@ const goalReached = computed(() => {
   return percentage >= 100
 })
 
+// Filter intake history to show only today's entries
+const todayIntakes = computed(() => {
+  const today = new Date().toISOString().split('T')[0]
+  return intakeHistory.value.filter(entry => {
+    const entryDate = new Date(entry.timestamp).toISOString().split('T')[0]
+    return entryDate === today
+  })
+})
+
 watch(goalReached, (newVal, oldVal) => {
   // Trigger celebration nur wenn gerade erreicht UND noch nicht gezeigt
   if (newVal && !oldVal && !hasShownCelebration.value) {
@@ -678,13 +687,20 @@ async function handleLogout() {
                   Heute getrunken
                 </h3>
                 <span class="bg-game-cyan bg-opacity-20 text-white-500 px-3 py-1 rounded-full text-sm font-semibold">
-                  {{ intakeHistory.length }} Einträge
+                  {{ todayIntakes.length }} Einträge
                 </span>
               </div>
 
-              <transition-group name="list" tag="div" class="space-y-3 mb-4">
+              <!-- Empty State for Today -->
+              <div v-if="todayIntakes.length === 0" class="text-center py-8">
+                <font-awesome-icon icon="droplet" class="text-gray-600 text-4xl mb-3" />
+                <p class="text-gray-400">Noch keine Einträge für heute</p>
+                <p class="text-sm text-gray-500 mt-1">Füge Wasser hinzu um zu starten!</p>
+              </div>
+
+              <transition-group v-else name="list" tag="div" class="space-y-3 mb-4">
                 <div
-                  v-for="entry in intakeHistory.slice(0, 3)"
+                  v-for="entry in todayIntakes.slice(0, 3)"
                   :key="entry.timestamp"
                   class="bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-game-cyan transition-all duration-200"
                 >
@@ -703,7 +719,7 @@ async function handleLogout() {
                 </div>
               </transition-group>
 
-              <button @click="router.push('/history')" class="w-full bg-gray-700 hover:bg-gray-600 py-3 rounded-lg transition font-medium text-white">
+              <button v-if="todayIntakes.length > 0" @click="router.push('/history')" class="w-full bg-gray-700 hover:bg-gray-600 py-3 rounded-lg transition font-medium text-white">
                 Alle anzeigen
               </button>
             </div>
@@ -794,40 +810,6 @@ async function handleLogout() {
               </div>
             </div>
 
-            <!-- Achievements -->
-            <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg">
-              <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <font-awesome-icon icon="trophy" class="text-yellow-500 text-2xl" />
-                Erfolge
-              </h3>
-
-              <div class="space-y-4">
-                <div class="flex items-center space-x-3">
-                  <div class="h-12 w-12 rounded-full bg-blue-500/20 flex items-center justify-center relative">
-                    <font-awesome-icon icon="star" class="text-blue-500 text-xl relative z-10" />
-                  </div>
-                  <div>
-                    <p class="font-medium">Ziel erreicht</p>
-                    <p class="text-xs text-gray-400">7 mal diese Woche</p>
-                  </div>
-                </div>
-
-                <div class="flex items-center space-x-3">
-                  <div class="h-12 w-12 rounded-full bg-purple-500/20 flex items-center justify-center relative">
-                    <font-awesome-icon icon="medal" class="text-purple-500 text-xl relative z-10" />
-                  </div>
-                  <div>
-                    <p class="font-medium">Hydration Hero</p>
-                    <p class="text-xs text-gray-400">30 Tage aktiv</p>
-                  </div>
-                </div>
-              </div>
-
-              <button class="w-full mt-4 bg-gray-700 hover:bg-gray-600 py-2 rounded-lg transition font-medium">
-                Alle Erfolge
-              </button>
-            </div>
-
             <!-- Tips Card -->
             <div class="bg-gradient-to-br from-amber-900/40 to-orange-900/40 rounded-xl p-6 border border-amber-700/50 shadow-lg">
               <h3 class="font-bold mb-3 text-lg flex items-center gap-2">
@@ -862,7 +844,6 @@ async function handleLogout() {
                 <li><router-link to="/dashboard" class="text-gray-400 hover:text-game-cyan transition">Dashboard</router-link></li>
                 <li><router-link to="/statistics" class="text-gray-400 hover:text-game-cyan transition">Statistiken</router-link></li>
                 <li><router-link to="/history" class="text-gray-400 hover:text-game-cyan transition">Verlauf</router-link></li>
-                <li><span class="text-gray-600 cursor-not-allowed">Erfolge (Coming Soon)</span></li>
               </ul>
             </div>
 
