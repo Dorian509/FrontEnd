@@ -429,7 +429,10 @@ async function handleLogout() {
             <font-awesome-icon icon="bell" class="text-gray-400 hover:text-white cursor-pointer" />
             <span class="absolute -top-1 -right-1 bg-game-pink text-xs rounded-full h-4 w-4 flex items-center justify-center">2</span>
           </div>
-          <div class="flex items-center space-x-2 bg-gray-800 rounded-full pl-2 pr-4 py-1 cursor-pointer hover:bg-gray-700 transition">
+          <div
+            @click="router.push('/settings')"
+            class="flex items-center space-x-2 bg-gray-800 rounded-full pl-2 pr-4 py-1 cursor-pointer hover:bg-gray-700 transition"
+          >
             <div :class="[
               'h-8 w-8 rounded-full flex items-center justify-center',
               isGuest ? 'bg-amber-500' : 'bg-game-cyan'
@@ -856,10 +859,10 @@ async function handleLogout() {
             <div>
               <h4 class="font-bold mb-4 text-white">Features</h4>
               <ul class="space-y-2 text-sm">
-                <li><a href="#" class="text-gray-400 hover:text-game-cyan transition">Dashboard</a></li>
-                <li><a href="#" class="text-gray-400 hover:text-game-cyan transition">Statistiken</a></li>
-                <li><a href="#" class="text-gray-400 hover:text-game-cyan transition">Verlauf</a></li>
-                <li><a href="#" class="text-gray-400 hover:text-game-cyan transition">Erfolge</a></li>
+                <li><router-link to="/dashboard" class="text-gray-400 hover:text-game-cyan transition">Dashboard</router-link></li>
+                <li><router-link to="/statistics" class="text-gray-400 hover:text-game-cyan transition">Statistiken</router-link></li>
+                <li><router-link to="/history" class="text-gray-400 hover:text-game-cyan transition">Verlauf</router-link></li>
+                <li><span class="text-gray-600 cursor-not-allowed">Erfolge (Coming Soon)</span></li>
               </ul>
             </div>
 
@@ -867,10 +870,10 @@ async function handleLogout() {
             <div>
               <h4 class="font-bold mb-4 text-white">Account</h4>
               <ul class="space-y-2 text-sm">
-                <li><a href="#" class="text-gray-400 hover:text-game-cyan transition">Profil</a></li>
-                <li><a href="#" class="text-gray-400 hover:text-game-cyan transition">Einstellungen</a></li>
-                <li><a href="#" class="text-gray-400 hover:text-game-cyan transition">Erinnerungen</a></li>
-                <li><a href="#" class="text-gray-400 hover:text-game-cyan transition">Export</a></li>
+                <li><router-link to="/settings" class="text-gray-400 hover:text-game-cyan transition">Profil</router-link></li>
+                <li><router-link to="/settings" class="text-gray-400 hover:text-game-cyan transition">Einstellungen</router-link></li>
+                <li><span class="text-gray-600 cursor-not-allowed">Erinnerungen (Coming Soon)</span></li>
+                <li><span class="text-gray-600 cursor-not-allowed">Export (Coming Soon)</span></li>
               </ul>
             </div>
 
