@@ -121,10 +121,9 @@ async function load() {
   try {
     if (isGuest.value) {
       // Load from LocalStorage for guest mode
-      console.log('📥 Loading data for guest mode...')
+      console.log('📥 Loading hydration data for guest mode...')
       checkDailyReset()
       const savedData = localStorage.getItem('guestHydrationData')
-      const savedHistory = localStorage.getItem('guestHistory')
 
       if (savedData) {
         data.value = JSON.parse(savedData)
@@ -137,22 +136,7 @@ async function load() {
           remainingMl: 2500
         }
         localStorage.setItem('guestHydrationData', JSON.stringify(data.value))
-        console.log('🆕 Initialized new guest data')
-      }
-
-      // Load history from LocalStorage
-      if (savedHistory) {
-        const parsed = JSON.parse(savedHistory)
-        intakeHistory.value = parsed
-        console.log('📦 Loaded intake history:', parsed.length, 'entries')
-
-        // Log all timestamps for debugging
-        parsed.forEach((intake: IntakeEntry) => {
-          console.log('📋 Entry:', intake.volumeMl + 'ml at', new Date(intake.timestamp).toISOString(), '(' + intake.timeAgo + ')')
-        })
-      } else {
-        intakeHistory.value = []
-        console.log('🆕 No history found, initialized empty array')
+        console.log('🆕 Initialized new guest hydration data')
       }
 
       // Initialize guestStats if not exists
@@ -277,9 +261,67 @@ async function loadProfile() {
   }
 }
 
-onMounted(() => {
-  load()
+async function loadIntakeHistory() {
+  try {
+    console.log('📥 Loading intake history...')
+
+    if (isGuest.value) {
+      console.log('👤 Guest Mode: Loading from localStorage')
+
+      const stored = localStorage.getItem('guestHistory')
+
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        intakeHistory.value = parsed
+        console.log('✅ Loaded from localStorage:', parsed.length, 'entries')
+
+        // Debug: Show all entries
+        parsed.forEach((entry: IntakeEntry, index: number) => {
+          console.log(`  ${index + 1}. ${entry.volumeMl}ml at ${new Date(entry.timestamp).toLocaleString()}`)
+        })
+      } else {
+        console.log('ℹ️ No history in localStorage yet')
+        intakeHistory.value = []
+      }
+
+    } else {
+      console.log('👨 User Mode: Loading from API')
+
+      const response = await fetchWithRetry(
+        apiUrl(`/api/intakes/${user.value?.id || userId.value}/recent?limit=50`),
+        { headers: getAuthHeaders() }
+      )
+
+      const data = await parseJsonSafely<IntakeEntry[]>(response)
+      intakeHistory.value = data
+      console.log('✅ Loaded from API:', data.length, 'entries')
+    }
+
+    console.log('📊 Total entries in intakeHistory:', intakeHistory.value.length)
+
+  } catch (error) {
+    console.error('❌ Failed to load intake history:', error)
+    intakeHistory.value = []
+  }
+}
+
+onMounted(async () => {
+  console.log('📊 Dashboard mounted')
+  console.log('👤 Guest Mode:', isGuest.value)
+  console.log('👨 User:', user.value)
+
+  // Load dashboard data (progress, goal, etc.)
+  await load()
+
+  // Load profile
   loadProfile()
+
+  // Load intake history (for "Heute getrunken")
+  await loadIntakeHistory()
+
+  console.log('✅ Dashboard fully loaded')
+  console.log('📊 Data:', data.value)
+  console.log('📋 History entries:', intakeHistory.value.length)
 })
 
 async function addIntake(ml: number, source: Source | null = null) {
