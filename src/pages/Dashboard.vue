@@ -56,13 +56,40 @@ const goalReached = computed(() => {
   return percentage >= 100
 })
 
-// Filter intake history to show only today's entries
+// Filter intake history to show only today's entries (last 3, newest first)
 const todayIntakes = computed(() => {
-  const today = new Date().toISOString().split('T')[0]
-  return intakeHistory.value.filter(entry => {
-    const entryDate = new Date(entry.timestamp).toISOString().split('T')[0]
-    return entryDate === today
+  const now = new Date()
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0)
+  const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59)
+
+  console.log('🔍 Filtering for today:', todayStart.toISOString(), 'to', todayEnd.toISOString())
+  console.log('📋 Total intakes in history:', intakeHistory.value.length)
+
+  const filtered = intakeHistory.value.filter(intake => {
+    const intakeDate = new Date(intake.timestamp)
+    const isToday = intakeDate >= todayStart && intakeDate <= todayEnd
+
+    if (isToday) {
+      console.log('✅ Today:', intake.volumeMl + 'ml at', intakeDate.toISOString())
+    } else {
+      console.log('❌ Not today:', intake.volumeMl + 'ml at', intakeDate.toISOString())
+    }
+
+    return isToday
   })
+
+  console.log('📅 Today intakes count:', filtered.length)
+
+  // Sort by timestamp DESC (newest first)
+  const sorted = filtered.sort((a, b) => {
+    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  })
+
+  // Return only the last 3 entries
+  const result = sorted.slice(0, 3)
+  console.log('🎯 Showing last 3 entries:', result.length)
+
+  return result
 })
 
 watch(goalReached, (newVal, oldVal) => {
@@ -98,12 +125,14 @@ async function load() {
   try {
     if (isGuest.value) {
       // Load from LocalStorage for guest mode
+      console.log('📥 Loading data for guest mode...')
       checkDailyReset()
       const savedData = localStorage.getItem('guestHydrationData')
       const savedHistory = localStorage.getItem('guestHistory')
 
       if (savedData) {
         data.value = JSON.parse(savedData)
+        console.log('📦 Loaded hydration data:', data.value)
       } else {
         // Initialize default data for new guest
         data.value = {
@@ -112,13 +141,22 @@ async function load() {
           remainingMl: 2500
         }
         localStorage.setItem('guestHydrationData', JSON.stringify(data.value))
+        console.log('🆕 Initialized new guest data')
       }
 
       // Load history from LocalStorage
       if (savedHistory) {
-        intakeHistory.value = JSON.parse(savedHistory)
+        const parsed = JSON.parse(savedHistory)
+        intakeHistory.value = parsed
+        console.log('📦 Loaded intake history:', parsed.length, 'entries')
+
+        // Log all timestamps for debugging
+        parsed.forEach((intake: IntakeEntry) => {
+          console.log('📋 Entry:', intake.volumeMl + 'ml at', new Date(intake.timestamp).toISOString(), '(' + intake.timeAgo + ')')
+        })
       } else {
         intakeHistory.value = []
+        console.log('🆕 No history found, initialized empty array')
       }
 
       // Initialize guestStats if not exists
@@ -700,7 +738,7 @@ async function handleLogout() {
 
               <transition-group v-else name="list" tag="div" class="space-y-3 mb-4">
                 <div
-                  v-for="entry in todayIntakes.slice(0, 3)"
+                  v-for="entry in todayIntakes"
                   :key="entry.timestamp"
                   class="bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-game-cyan transition-all duration-200"
                 >
