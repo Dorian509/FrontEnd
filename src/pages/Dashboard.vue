@@ -21,7 +21,7 @@ interface Profile {
   climate: 'NORMAL' | 'HOT'
 }
 
-type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS'
+type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS' | 'SCHNELL_300' | 'SCHNELL_500'
 
 interface IntakeEntry {
   volumeMl: number
@@ -747,7 +747,7 @@ async function handleLogout() {
 
                 <!-- Fixed Amount Buttons (300, 500ml) -->
                 <button
-                    @click="addIntake(300)"
+                    @click="addIntake(300, 'SCHNELL_300')"
                     :disabled="isAdding"
                     aria-label="300 Milliliter hinzufügen"
                     class="flex-1 min-w-[120px] group bg-gray-800 p-6 rounded-lg hover:bg-gradient-to-r hover:from-game-blue hover:to-game-cyan transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
@@ -759,7 +759,7 @@ async function handleLogout() {
                 </button>
 
                 <button
-                    @click="addIntake(500)"
+                    @click="addIntake(500, 'SCHNELL_500')"
                     :disabled="isAdding"
                     aria-label="500 Milliliter hinzufügen"
                     class="flex-1 min-w-[120px] group bg-gray-800 p-6 rounded-lg hover:bg-gradient-to-r hover:from-game-pink hover:to-game-purple transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
