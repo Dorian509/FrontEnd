@@ -21,7 +21,7 @@ interface Profile {
   climate: 'NORMAL' | 'HOT'
 }
 
-type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS' | 'SCHNELL_300' | 'SCHNELL_500'
+type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS' | 'QUICK'
 
 interface IntakeEntry {
   volumeMl: number
@@ -457,8 +457,7 @@ const sourceConfig: Record<Source, { label: string; icon: string; ml: number }> 
   SIP: { label: 'Schluck', icon: 'fa-droplet', ml: 50 },
   DOUBLE_SIP: { label: 'Doppel', icon: 'fa-glass-water', ml: 100 },
   GLASS: { label: 'Glas', icon: 'fa-glass-water', ml: 250 },
-  SCHNELL_300: { label: 'Schnell', icon: 'fa-plus', ml: 300 },
-  SCHNELL_500: { label: 'Schnell', icon: 'fa-circle-plus', ml: 500 }
+  QUICK: { label: 'Schnell', icon: 'fa-plus', ml: 0 }
 }
 
 // Nur die basic sources für v-for im Template (50ml, 100ml, 250ml)
@@ -478,6 +477,7 @@ function getIntakeIcon(source: Source | string): string {
     'SCHLUCK': 'fa-droplet',
     'DOPPEL': 'fa-glass-water',
     'GLAS': 'fa-glass-water',
+    'QUICK': 'fa-plus',
     'SCHNELL': 'fa-plus',
     'SCHNELL_300': 'fa-plus',
     'SCHNELL_500': 'fa-circle-plus'
@@ -490,6 +490,7 @@ function getIntakeIconClass(source: Source | string): string {
     SIP: 'bg-game-cyan bg-opacity-20',
     DOUBLE_SIP: 'bg-game-blue bg-opacity-20',
     GLASS: 'bg-game-purple bg-opacity-20',
+    QUICK: 'bg-purple-900/30',
     'SCHLUCK': 'bg-game-cyan bg-opacity-20',
     'DOPPEL': 'bg-game-blue bg-opacity-20',
     'GLAS': 'bg-game-purple bg-opacity-20',
@@ -511,6 +512,7 @@ function getSourceLabel(source: Source | string): string {
     'SCHLUCK': 'Schluck',
     'DOPPEL': 'Doppel',
     'GLAS': 'Glas',
+    'QUICK': 'Schnell',
     'SCHNELL': 'Schnell',
     'SCHNELL_300': 'Schnell',
     'SCHNELL_500': 'Schnell'
@@ -755,7 +757,7 @@ async function handleLogout() {
 
                 <!-- Fixed Amount Buttons (300, 500ml) -->
                 <button
-                    @click="addIntake(300, 'SCHNELL_300')"
+                    @click="addIntake(300, 'QUICK')"
                     :disabled="isAdding"
                     aria-label="300 Milliliter hinzufügen"
                     class="flex-1 min-w-[120px] group bg-gray-800 p-6 rounded-lg hover:bg-gradient-to-r hover:from-game-blue hover:to-game-cyan transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
@@ -767,7 +769,7 @@ async function handleLogout() {
                 </button>
 
                 <button
-                    @click="addIntake(500, 'SCHNELL_500')"
+                    @click="addIntake(500, 'QUICK')"
                     :disabled="isAdding"
                     aria-label="500 Milliliter hinzufügen"
                     class="flex-1 min-w-[120px] group bg-gray-800 p-6 rounded-lg hover:bg-gradient-to-r hover:from-game-pink hover:to-game-purple transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
