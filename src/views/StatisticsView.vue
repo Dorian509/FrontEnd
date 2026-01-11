@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { apiUrl } from '@/utils/api'
@@ -66,8 +66,38 @@ const totalStats = computed(() => {
 })
 
 onMounted(async () => {
+  console.log('📊 ========================================')
+  console.log('📊 STATISTICS VIEW MOUNTED')
+  console.log('📊 ========================================')
+  console.log('👤 User:', user.value)
+  console.log('🎭 isGuest:', isGuest.value)
+
   await loadGoal()
   await loadStats()
+
+  console.log('📊 ========================================')
+  console.log('📊 AFTER LOADING - FINAL STATE')
+  console.log('📊 ========================================')
+  console.log('📊 stats.value:', stats.value)
+  console.log('📊 stats.value.length:', stats.value.length)
+  console.log('📊 goalMl.value:', goalMl.value)
+  console.log('📊 yAxisMax.value:', yAxisMax.value)
+
+  if (stats.value.length > 0) {
+    console.log('📊 STATS DETAILS:')
+    stats.value.forEach((day, index) => {
+      console.log(`  Day ${index + 1}:`, {
+        date: day.date,
+        consumedMl: day.consumedMl,
+        goalMl: day.goalMl,
+        percentage: day.percentage,
+        barHeight: getBarHeight(day.consumedMl) + '%'
+      })
+    })
+  } else {
+    console.warn('⚠️ stats.value is EMPTY!')
+  }
+  console.log('📊 ========================================')
 })
 
 // Berechne Tagesziel basierend auf Profil
@@ -133,38 +163,91 @@ async function loadStats() {
   loading.value = true
   error.value = null
 
+  console.log('📥 ========================================')
+  console.log('📥 LOADING STATS')
+  console.log('📥 ========================================')
+  console.log('🎭 isGuest:', isGuest.value)
+
   try {
     if (isGuest.value) {
+      console.log('👤 Guest Mode: Loading from localStorage...')
+
       // Lade aus LocalStorage
       const savedStats = localStorage.getItem('guestStats')
+      console.log('💾 localStorage.getItem("guestStats"):', savedStats)
+
       if (savedStats) {
-        stats.value = JSON.parse(savedStats)
+        const parsedStats = JSON.parse(savedStats)
+        console.log('✅ Loaded guestStats from localStorage:', parsedStats)
+        console.log('📊 Number of days:', parsedStats.length)
+
+        // Force reactivity update
+        stats.value = []
+        await nextTick()
+        stats.value = parsedStats
       } else {
+        console.log('⚠️ No guestStats in localStorage, generating mock data...')
         // Generiere Mock-Daten für die letzten 7 Tage
-        stats.value = generateMockStats()
-        localStorage.setItem('guestStats', JSON.stringify(stats.value))
+        const mockStats = generateMockStats()
+        console.log('✅ Generated mock stats:', mockStats)
+        localStorage.setItem('guestStats', JSON.stringify(mockStats))
+        console.log('💾 Saved mock stats to localStorage')
+
+        // Force reactivity update
+        stats.value = []
+        await nextTick()
+        stats.value = mockStats
       }
     } else {
+      console.log('👨 User Mode: Loading from API...')
       // Lade Intakes von API und berechne Statistiken
-      const res = await fetch(apiUrl(`/api/intakes/${user.value?.id}/recent?limit=100`), {
+      const url = apiUrl(`/api/intakes/${user.value?.id}/recent?limit=100`)
+      console.log('📡 Fetching:', url)
+
+      const res = await fetch(url, {
         headers: getAuthHeaders()
       })
 
       if (!res.ok) throw new Error('HTTP ' + res.status)
       const intakes: Intake[] = await res.json()
+      console.log('✅ Fetched intakes:', intakes)
+      console.log('📊 Number of intakes:', intakes.length)
 
       // Berechne Statistiken aus den Intakes
-      stats.value = calculateDailyStats(intakes, goalMl.value)
+      const calculatedStats = calculateDailyStats(intakes, goalMl.value)
+      console.log('✅ Calculated daily stats:', calculatedStats)
+
+      // Force reactivity update
+      stats.value = []
+      await nextTick()
+      stats.value = calculatedStats
+
+      console.log('✅ Stats set to:', stats.value)
+      console.log('✅ Stats length:', stats.value.length)
     }
   } catch (e) {
+    console.error('❌ Error loading stats:', e)
     error.value = String(e)
   } finally {
     loading.value = false
+    console.log('📥 Loading complete. stats.value:', stats.value)
+    console.log('📥 stats.value.length:', stats.value.length)
+
+    // Wait for DOM update
+    await nextTick()
+    console.log('📥 After nextTick. DOM should be updated.')
+    console.log('📥 ========================================')
   }
 }
 
 // Helper: Berechne tägliche Statistiken aus Intakes
 function calculateDailyStats(intakes: Intake[], goal: number): DayStats[] {
+  console.log('📊 ========================================')
+  console.log('📊 CALCULATING DAILY STATS')
+  console.log('📊 ========================================')
+  console.log('📊 Total intakes:', intakes.length)
+  console.log('📊 Goal:', goal)
+
   const today = new Date()
   const dailyStats: DayStats[] = []
 
@@ -183,6 +266,12 @@ function calculateDailyStats(intakes: Intake[], goal: number): DayStats[] {
     const consumedMl = dayIntakes.reduce((sum, intake) => sum + intake.volumeMl, 0)
     const percentage = Math.round((consumedMl / goal) * 100)
 
+    console.log(`  ${dateStr}:`, {
+      dayIntakes: dayIntakes.length,
+      consumedMl,
+      percentage: percentage + '%'
+    })
+
     dailyStats.push({
       date: dateStr,
       consumedMl,
@@ -190,6 +279,9 @@ function calculateDailyStats(intakes: Intake[], goal: number): DayStats[] {
       percentage
     })
   }
+
+  console.log('📊 Final daily stats:', dailyStats)
+  console.log('📊 ========================================')
 
   return dailyStats
 }
@@ -266,14 +358,28 @@ const goalLinePosition = computed(() => {
 })
 
 function getBarHeight(consumedMl: number): number {
-  if (consumedMl === 0) return 0
+  if (consumedMl === 0) {
+    return 0
+  }
 
   // Berechne Höhe relativ zur Y-Achse (nicht zum Goal!)
   const percentage = (consumedMl / yAxisMax.value) * 100
 
   // Mindesthöhe von 2% damit der Bar sichtbar bleibt
   const minHeight = 2
-  return Math.min(100, Math.max(minHeight, percentage))
+  const result = Math.min(100, Math.max(minHeight, percentage))
+
+  // Log only if result seems wrong
+  if (consumedMl > 0 && result < 1) {
+    console.warn('⚠️ getBarHeight warning:', {
+      consumedMl,
+      yAxisMax: yAxisMax.value,
+      percentage: percentage.toFixed(2) + '%',
+      result: result.toFixed(2) + '%'
+    })
+  }
+
+  return result
 }
 
 function getBarColor(percentage: number): string {
@@ -375,6 +481,29 @@ function formatDateLong(dateString: string): string {
         </button>
       </div>
 
+      <!-- DEBUG INFO -->
+      <div v-if="!loading" class="bg-blue-900/20 border border-blue-700 rounded-xl p-4 mb-4">
+        <details>
+          <summary class="cursor-pointer font-bold text-blue-400">🔍 Debug Info (Klicken zum Öffnen)</summary>
+          <div class="mt-3 text-sm space-y-1 text-gray-300">
+            <p><strong>stats.length:</strong> {{ stats.length }}</p>
+            <p><strong>loading:</strong> {{ loading }}</p>
+            <p><strong>error:</strong> {{ error }}</p>
+            <p><strong>isGuest:</strong> {{ isGuest }}</p>
+            <p><strong>goalMl:</strong> {{ goalMl }}</p>
+            <p><strong>yAxisMax:</strong> {{ yAxisMax }}</p>
+            <p><strong>Stats data:</strong></p>
+            <pre class="bg-gray-900 p-2 rounded text-xs overflow-auto">{{ JSON.stringify(stats, null, 2) }}</pre>
+            <button
+              @click="loadStats()"
+              class="mt-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-bold"
+            >
+              🔄 Reload Stats
+            </button>
+          </div>
+        </details>
+      </div>
+
       <!-- Statistics Content -->
       <div v-else class="space-y-8">
         <!-- Summary Cards -->
@@ -448,17 +577,29 @@ function formatDateLong(dateString: string): string {
 
             <!-- Bars Container -->
             <div class="absolute left-14 right-0 top-0 bottom-8 flex items-end justify-around gap-2">
+              <!-- Debug: Stats count -->
+              <div v-if="stats.length === 0" class="absolute inset-0 flex items-center justify-center">
+                <p class="text-red-500 font-bold">⚠️ stats.length = 0</p>
+              </div>
+
               <div
-                v-for="day in stats"
+                v-for="(day, index) in stats"
                 :key="day.date"
                 class="flex-1 flex flex-col items-center gap-3 group"
               >
                 <!-- Bar -->
                 <div class="relative w-full flex items-end justify-center" style="height: 100%;">
+                  <!-- Debug marker for each bar -->
+                  <div v-if="day.consumedMl === 0" class="absolute bottom-0 left-0 right-0 h-1 bg-red-500"></div>
+
                   <div
                     class="w-full rounded-t-lg transition-all duration-500 hover:scale-105 cursor-pointer relative"
                     :class="`bg-gradient-to-t ${getBarColor(day.percentage)}`"
-                    :style="{ height: getBarHeight(day.consumedMl) + '%' }"
+                    :style="{
+                      height: getBarHeight(day.consumedMl) + '%',
+                      minHeight: day.consumedMl > 0 ? '4px' : '0'
+                    }"
+                    :title="`${day.consumedMl}ml, Height: ${getBarHeight(day.consumedMl)}%`"
                   >
                     <!-- Tooltip on hover -->
                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
