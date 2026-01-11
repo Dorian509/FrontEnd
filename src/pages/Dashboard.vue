@@ -729,7 +729,7 @@ async function handleLogout() {
               <p class="text-gray-400 text-sm mb-6">Klicke auf einen Button um Wasser hinzuzufügen</p>
 
               <!-- Alle Buttons kombiniert -->
-              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+              <div class="flex flex-wrap gap-3 mb-6">
                 <!-- Trinkart Buttons (50, 100, 250ml) -->
                 <button
                     v-for="(config, source) in sourceConfig"
@@ -737,10 +737,10 @@ async function handleLogout() {
                     @click="addIntake(config.ml, source)"
                     :disabled="isAdding"
                     :aria-label="`${config.ml} Milliliter ${config.label} hinzufügen`"
-                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-cyan hover:to-game-blue transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    class="flex-1 min-w-[120px] group bg-gray-800 p-6 rounded-lg hover:bg-gradient-to-r hover:from-game-cyan hover:to-game-blue transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <div class="flex flex-col items-center justify-center gap-2">
-                    <div class="text-2xl font-bold text-white">{{ config.ml }}ml</div>
+                    <div class="text-4xl font-bold text-white">{{ config.ml }}ml</div>
                     <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors uppercase tracking-wider">{{ config.label }}</div>
                   </div>
                 </button>
@@ -750,10 +750,10 @@ async function handleLogout() {
                     @click="addIntake(300)"
                     :disabled="isAdding"
                     aria-label="300 Milliliter hinzufügen"
-                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-blue hover:to-game-cyan transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    class="flex-1 min-w-[120px] group bg-gray-800 p-6 rounded-lg hover:bg-gradient-to-r hover:from-game-blue hover:to-game-cyan transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <div class="flex flex-col items-center justify-center gap-2">
-                    <div class="text-2xl font-bold text-white">300ml</div>
+                    <div class="text-4xl font-bold text-white">300ml</div>
                     <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors uppercase tracking-wider">Schnell</div>
                   </div>
                 </button>
@@ -762,10 +762,10 @@ async function handleLogout() {
                     @click="addIntake(500)"
                     :disabled="isAdding"
                     aria-label="500 Milliliter hinzufügen"
-                    class="group bg-gray-800 p-4 rounded-lg hover:bg-gradient-to-r hover:from-game-pink hover:to-game-purple transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    class="flex-1 min-w-[120px] group bg-gray-800 p-6 rounded-lg hover:bg-gradient-to-r hover:from-game-pink hover:to-game-purple transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <div class="flex flex-col items-center justify-center gap-2">
-                    <div class="text-2xl font-bold text-white">500ml</div>
+                    <div class="text-4xl font-bold text-white">500ml</div>
                     <div class="text-xs text-gray-400 group-hover:text-white/80 transition-colors uppercase tracking-wider">Schnell</div>
                   </div>
                 </button>
