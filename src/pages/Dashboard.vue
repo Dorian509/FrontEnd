@@ -348,7 +348,7 @@ async function addIntake(ml: number, source: Source | null = null) {
     intakeHistory.value.unshift(newIntake)
 
     // 3. Toast sofort zeigen mit Label
-    const sourceLabel = usedSource ? sourceConfig[usedSource].label : 'Menge'
+    const sourceLabel = usedSource ? getSourceLabel(usedSource) : 'Menge'
     toast.value = `${ml}ml ${sourceLabel} hinzugefügt`
     setTimeout(() => (toast.value = null), 2000)
 
@@ -456,8 +456,16 @@ const climateLabels: Record<Profile['climate'], string> = {
 const sourceConfig: Record<Source, { label: string; icon: string; ml: number }> = {
   SIP: { label: 'Schluck', icon: 'fa-droplet', ml: 50 },
   DOUBLE_SIP: { label: 'Doppel', icon: 'fa-glass-water', ml: 100 },
-  GLASS: { label: 'Glas', icon: 'fa-glass-water', ml: 250 }
+  GLASS: { label: 'Glas', icon: 'fa-glass-water', ml: 250 },
+  SCHNELL_300: { label: 'Schnell', icon: 'fa-plus', ml: 300 },
+  SCHNELL_500: { label: 'Schnell', icon: 'fa-circle-plus', ml: 500 }
 }
+
+// Nur die basic sources für v-for im Template (50ml, 100ml, 250ml)
+const basicSourceConfig = computed(() => {
+  const { SIP, DOUBLE_SIP, GLASS } = sourceConfig
+  return { SIP, DOUBLE_SIP, GLASS }
+})
 
 function getIntakeIcon(source: Source | string): string {
   // Try sourceConfig first
@@ -732,7 +740,7 @@ async function handleLogout() {
               <div class="flex flex-wrap gap-3 mb-6">
                 <!-- Trinkart Buttons (50, 100, 250ml) -->
                 <button
-                    v-for="(config, source) in sourceConfig"
+                    v-for="(config, source) in basicSourceConfig"
                     :key="source"
                     @click="addIntake(config.ml, source)"
                     :disabled="isAdding"
