@@ -481,31 +481,30 @@ function formatDateLong(dateString: string): string {
         </button>
       </div>
 
-      <!-- DEBUG INFO -->
-      <div v-if="!loading" class="bg-blue-900/20 border border-blue-700 rounded-xl p-4 mb-4">
-        <details>
-          <summary class="cursor-pointer font-bold text-blue-400">🔍 Debug Info (Klicken zum Öffnen)</summary>
-          <div class="mt-3 text-sm space-y-1 text-gray-300">
-            <p><strong>stats.length:</strong> {{ stats.length }}</p>
-            <p><strong>loading:</strong> {{ loading }}</p>
-            <p><strong>error:</strong> {{ error }}</p>
-            <p><strong>isGuest:</strong> {{ isGuest }}</p>
-            <p><strong>goalMl:</strong> {{ goalMl }}</p>
-            <p><strong>yAxisMax:</strong> {{ yAxisMax }}</p>
-            <p><strong>Stats data:</strong></p>
-            <pre class="bg-gray-900 p-2 rounded text-xs overflow-auto">{{ JSON.stringify(stats, null, 2) }}</pre>
-            <button
-              @click="loadStats()"
-              class="mt-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-bold"
-            >
-              🔄 Reload Stats
-            </button>
-          </div>
-        </details>
-      </div>
-
       <!-- Statistics Content -->
       <div v-else class="space-y-8">
+        <!-- DEBUG INFO -->
+        <div class="bg-blue-900/20 border border-blue-700 rounded-xl p-4">
+          <details>
+            <summary class="cursor-pointer font-bold text-blue-400">🔍 Debug Info (Klicken zum Öffnen)</summary>
+            <div class="mt-3 text-sm space-y-1 text-gray-300">
+              <p><strong>stats.length:</strong> {{ stats.length }}</p>
+              <p><strong>loading:</strong> {{ loading }}</p>
+              <p><strong>error:</strong> {{ error }}</p>
+              <p><strong>isGuest:</strong> {{ isGuest }}</p>
+              <p><strong>goalMl:</strong> {{ goalMl }}</p>
+              <p><strong>yAxisMax:</strong> {{ yAxisMax }}</p>
+              <p><strong>Stats data:</strong></p>
+              <pre class="bg-gray-900 p-2 rounded text-xs overflow-auto max-h-40">{{ JSON.stringify(stats, null, 2) }}</pre>
+              <button
+                @click="loadStats()"
+                class="mt-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-bold"
+              >
+                🔄 Reload Stats
+              </button>
+            </div>
+          </details>
+        </div>
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Durchschnitt -->
