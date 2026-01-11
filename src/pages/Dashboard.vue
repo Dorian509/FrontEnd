@@ -21,7 +21,7 @@ interface Profile {
   climate: 'NORMAL' | 'HOT'
 }
 
-type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS' | 'QUICK'
+type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS'
 
 interface IntakeEntry {
   volumeMl: number
@@ -348,7 +348,7 @@ async function addIntake(ml: number, source: Source | null = null) {
     intakeHistory.value.unshift(newIntake)
 
     // 3. Toast sofort zeigen mit Label
-    const sourceLabel = usedSource ? getSourceLabel(usedSource) : 'Menge'
+    const sourceLabel = usedSource ? getSourceLabel(usedSource, ml) : 'Menge'
     toast.value = `${ml}ml ${sourceLabel} hinzugefügt`
     setTimeout(() => (toast.value = null), 2000)
 
@@ -456,8 +456,7 @@ const climateLabels: Record<Profile['climate'], string> = {
 const sourceConfig: Record<Source, { label: string; icon: string; ml: number }> = {
   SIP: { label: 'Schluck', icon: 'fa-droplet', ml: 50 },
   DOUBLE_SIP: { label: 'Doppel', icon: 'fa-glass-water', ml: 100 },
-  GLASS: { label: 'Glas', icon: 'fa-glass-water', ml: 250 },
-  QUICK: { label: 'Schnell', icon: 'fa-plus', ml: 0 }
+  GLASS: { label: 'Glas', icon: 'fa-glass-water', ml: 250 }
 }
 
 // Nur die basic sources für v-for im Template (50ml, 100ml, 250ml)
@@ -466,13 +465,19 @@ const basicSourceConfig = computed(() => {
   return { SIP, DOUBLE_SIP, GLASS }
 })
 
-function getIntakeIcon(source: Source | string): string {
+function getIntakeIcon(source: Source | string, volumeMl?: number): string {
+  // Spezialfall: GLASS mit 300ml = fa-plus, 500ml = fa-circle-plus
+  if (source === 'GLASS' && volumeMl) {
+    if (volumeMl === 300) return 'fa-plus'
+    if (volumeMl === 500) return 'fa-circle-plus'
+  }
+
   // Try sourceConfig first
   if (source in sourceConfig) {
     return sourceConfig[source as Source].icon
   }
 
-  // Handle additional source types
+  // Handle additional source types (backwards compatibility)
   const icons: { [key: string]: string } = {
     'SCHLUCK': 'fa-droplet',
     'DOPPEL': 'fa-glass-water',
@@ -485,7 +490,13 @@ function getIntakeIcon(source: Source | string): string {
   return icons[source] || 'fa-droplet'
 }
 
-function getIntakeIconClass(source: Source | string): string {
+function getIntakeIconClass(source: Source | string, volumeMl?: number): string {
+  // Spezialfall: GLASS mit 300ml oder 500ml
+  if (source === 'GLASS' && volumeMl) {
+    if (volumeMl === 300) return 'bg-blue-900/30'
+    if (volumeMl === 500) return 'bg-pink-900/30'
+  }
+
   const classes: { [key: string]: string } = {
     SIP: 'bg-game-cyan bg-opacity-20',
     DOUBLE_SIP: 'bg-game-blue bg-opacity-20',
@@ -501,13 +512,18 @@ function getIntakeIconClass(source: Source | string): string {
   return classes[source] || 'bg-gray-800'
 }
 
-function getSourceLabel(source: Source | string): string {
+function getSourceLabel(source: Source | string, volumeMl?: number): string {
+  // Spezialfall: GLASS mit 300ml oder 500ml = "Schnell"
+  if (source === 'GLASS' && volumeMl && (volumeMl === 300 || volumeMl === 500)) {
+    return 'Schnell'
+  }
+
   // Try sourceConfig first
   if (source in sourceConfig) {
     return sourceConfig[source as Source].label
   }
 
-  // Handle additional source types
+  // Handle additional source types (backwards compatibility)
   const labels: { [key: string]: string } = {
     'SCHLUCK': 'Schluck',
     'DOPPEL': 'Doppel',
@@ -757,7 +773,7 @@ async function handleLogout() {
 
                 <!-- Fixed Amount Buttons (300, 500ml) -->
                 <button
-                    @click="addIntake(300, 'QUICK')"
+                    @click="addIntake(300, 'GLASS')"
                     :disabled="isAdding"
                     aria-label="300 Milliliter hinzufügen"
                     class="flex-1 min-w-[120px] group bg-gray-800 p-6 rounded-lg hover:bg-gradient-to-r hover:from-game-blue hover:to-game-cyan transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
@@ -769,7 +785,7 @@ async function handleLogout() {
                 </button>
 
                 <button
-                    @click="addIntake(500, 'QUICK')"
+                    @click="addIntake(500, 'GLASS')"
                     :disabled="isAdding"
                     aria-label="500 Milliliter hinzufügen"
                     class="flex-1 min-w-[120px] group bg-gray-800 p-6 rounded-lg hover:bg-gradient-to-r hover:from-game-pink hover:to-game-purple transition-all duration-300 shadow-md hover:shadow-2xl border-2 border-gray-700 hover:border-transparent hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
@@ -826,12 +842,12 @@ async function handleLogout() {
                 >
                   <div class="flex items-center justify-between">
                     <div class="flex items-center gap-4">
-                      <div :class="['h-12 w-12 rounded-full flex items-center justify-center', getIntakeIconClass(entry.source)]">
-                        <font-awesome-icon :icon="getIntakeIcon(entry.source).replace('fa-', '')" class="text-2xl" />
+                      <div :class="['h-12 w-12 rounded-full flex items-center justify-center', getIntakeIconClass(entry.source, entry.volumeMl)]">
+                        <font-awesome-icon :icon="getIntakeIcon(entry.source, entry.volumeMl).replace('fa-', '')" class="text-2xl" />
                       </div>
                       <div>
                         <div class="font-bold text-white">{{ entry.volumeMl }} ml</div>
-                        <div class="text-sm text-gray-400">{{ entry.timeAgo }} • {{ getSourceLabel(entry.source) }}</div>
+                        <div class="text-sm text-gray-400">{{ entry.timeAgo }} • {{ getSourceLabel(entry.source, entry.volumeMl) }}</div>
                       </div>
                     </div>
                     <font-awesome-icon icon="check" class="text-green-500 text-2xl" />
