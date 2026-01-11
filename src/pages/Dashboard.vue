@@ -455,25 +455,59 @@ const climateLabels: Record<Profile['climate'], string> = {
 
 const sourceConfig: Record<Source, { label: string; icon: string; ml: number }> = {
   SIP: { label: 'Schluck', icon: 'fa-droplet', ml: 50 },
-  DOUBLE_SIP: { label: 'Doppel', icon: 'fa-solid fa-glass-water-droplet', ml: 100 },
+  DOUBLE_SIP: { label: 'Doppel', icon: 'fa-glass-water', ml: 100 },
   GLASS: { label: 'Glas', icon: 'fa-glass-water', ml: 250 }
 }
 
-function getIntakeIcon(source: Source): string {
-  return sourceConfig[source].icon
+function getIntakeIcon(source: Source | string): string {
+  // Try sourceConfig first
+  if (source in sourceConfig) {
+    return sourceConfig[source as Source].icon
+  }
+
+  // Handle additional source types
+  const icons: { [key: string]: string } = {
+    'SCHLUCK': 'fa-droplet',
+    'DOPPEL': 'fa-glass-water',
+    'GLAS': 'fa-glass-water',
+    'SCHNELL': 'fa-plus',
+    'SCHNELL_300': 'fa-plus',
+    'SCHNELL_500': 'fa-circle-plus'
+  }
+  return icons[source] || 'fa-droplet'
 }
 
-function getIntakeIconClass(source: Source): string {
-  const classes = {
+function getIntakeIconClass(source: Source | string): string {
+  const classes: { [key: string]: string } = {
     SIP: 'bg-game-cyan bg-opacity-20',
     DOUBLE_SIP: 'bg-game-blue bg-opacity-20',
-    GLASS: 'bg-game-purple bg-opacity-20'
+    GLASS: 'bg-game-purple bg-opacity-20',
+    'SCHLUCK': 'bg-game-cyan bg-opacity-20',
+    'DOPPEL': 'bg-game-blue bg-opacity-20',
+    'GLAS': 'bg-game-purple bg-opacity-20',
+    'SCHNELL': 'bg-purple-900/30',
+    'SCHNELL_300': 'bg-blue-900/30',
+    'SCHNELL_500': 'bg-pink-900/30'
   }
-  return classes[source]
+  return classes[source] || 'bg-gray-800'
 }
 
-function getSourceLabel(source: Source): string {
-  return sourceConfig[source].label
+function getSourceLabel(source: Source | string): string {
+  // Try sourceConfig first
+  if (source in sourceConfig) {
+    return sourceConfig[source as Source].label
+  }
+
+  // Handle additional source types
+  const labels: { [key: string]: string } = {
+    'SCHLUCK': 'Schluck',
+    'DOPPEL': 'Doppel',
+    'GLAS': 'Glas',
+    'SCHNELL': 'Schnell',
+    'SCHNELL_300': 'Schnell',
+    'SCHNELL_500': 'Schnell'
+  }
+  return labels[source] || 'Wasser'
 }
 
 async function handleLogout() {
