@@ -323,13 +323,18 @@ const yAxisMax = computed(() => {
   // Minimum 3000ml für gute Darstellung
   const finalMax = Math.max(roundedMax, 3000)
 
-  console.log('📊 Y-Axis calculation:', {
-    maxConsumed,
-    maxGoal,
-    dataMax,
-    roundedMax,
-    finalMax
-  })
+  console.log('📊 ========================================')
+  console.log('📊 Y-AXIS CALCULATION')
+  console.log('📊 ========================================')
+  console.log('📊 Stats count:', stats.value.length)
+  console.log('📊 All consumedMl values:', stats.value.map(s => s.consumedMl))
+  console.log('📊 All goalMl values:', stats.value.map(s => s.goalMl))
+  console.log('📊 maxConsumed:', maxConsumed + 'ml')
+  console.log('📊 maxGoal:', maxGoal + 'ml')
+  console.log('📊 dataMax:', dataMax + 'ml')
+  console.log('📊 roundedMax:', roundedMax + 'ml')
+  console.log('📊 finalMax (yAxisMax):', finalMax + 'ml')
+  console.log('📊 ========================================')
 
   return finalMax
 })
@@ -535,10 +540,21 @@ function formatDateLong(dateString: string): string {
 
         <!-- Bar Chart -->
         <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700 shadow-lg">
-          <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
-            <font-awesome-icon icon="chart-column" class="text-game-purple" />
-            Letzte 7 Tage
-          </h3>
+          <div class="flex items-start justify-between mb-6">
+            <h3 class="text-xl font-bold flex items-center gap-2">
+              <font-awesome-icon icon="chart-column" class="text-game-purple" />
+              Letzte 7 Tage
+            </h3>
+
+            <!-- Debug Info Badge -->
+            <div class="text-xs font-mono bg-blue-900/50 px-3 py-2 rounded border border-blue-700">
+              <div class="flex gap-4">
+                <span class="text-blue-400">yAxisMax: <span class="text-white font-bold">{{ yAxisMax }}ml</span></span>
+                <span class="text-green-400">Goal: <span class="text-white font-bold">{{ goalMl }}ml</span></span>
+                <span class="text-purple-400">Chart H: <span class="text-white font-bold">320px</span></span>
+              </div>
+            </div>
+          </div>
 
           <!-- Chart -->
           <div class="relative h-80">
@@ -568,11 +584,21 @@ function formatDateLong(dateString: string): string {
                       minHeight: day.consumedMl > 0 ? '4px' : '0'
                     }"
                   >
+                    <!-- Debug: Show bar height calculation -->
+                    <div
+                      v-if="day.consumedMl > 0"
+                      class="absolute top-1 left-1/2 transform -translate-x-1/2 text-[10px] font-mono bg-black/70 px-1 rounded text-yellow-400"
+                    >
+                      {{ getBarHeight(day.consumedMl).toFixed(0) }}%
+                    </div>
+
                     <!-- Tooltip on hover -->
-                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                       <div class="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-xl border border-gray-700">
                         <p class="font-bold">{{ day.consumedMl }}ml</p>
-                        <p class="text-gray-400">{{ day.percentage }}% erreicht</p>
+                        <p class="text-gray-400">{{ day.percentage }}% vom Ziel</p>
+                        <p class="text-yellow-400">Bar: {{ getBarHeight(day.consumedMl).toFixed(1) }}% Höhe</p>
+                        <p class="text-gray-500 text-[10px]">yMax: {{ yAxisMax }}ml</p>
                       </div>
                     </div>
 
