@@ -365,21 +365,20 @@ function getBarHeight(consumedMl: number): number {
   // Berechne Höhe relativ zur Y-Achse (nicht zum Goal!)
   const percentage = (consumedMl / yAxisMax.value) * 100
 
-  // Mindesthöhe von 2% damit der Bar sichtbar bleibt
-  const minHeight = 2
-  const result = Math.min(100, Math.max(minHeight, percentage))
+  console.log('📏 getBarHeight:', {
+    consumedMl: consumedMl + 'ml',
+    yAxisMax: yAxisMax.value + 'ml',
+    calculation: `${consumedMl} / ${yAxisMax.value} * 100`,
+    percentage: percentage.toFixed(2) + '%'
+  })
 
-  // Log only if result seems wrong
-  if (consumedMl > 0 && result < 1) {
-    console.warn('⚠️ getBarHeight warning:', {
-      consumedMl,
-      yAxisMax: yAxisMax.value,
-      percentage: percentage.toFixed(2) + '%',
-      result: result.toFixed(2) + '%'
-    })
+  // Mindesthöhe nur für sehr kleine Werte (< 1%)
+  if (percentage < 1 && percentage > 0) {
+    console.log('   → Too small, using minimum 3%')
+    return 3
   }
 
-  return result
+  return Math.min(100, percentage)
 }
 
 function getBarColor(percentage: number): string {
@@ -483,28 +482,6 @@ function formatDateLong(dateString: string): string {
 
       <!-- Statistics Content -->
       <div v-else class="space-y-8">
-        <!-- DEBUG INFO -->
-        <div class="bg-blue-900/20 border border-blue-700 rounded-xl p-4">
-          <details>
-            <summary class="cursor-pointer font-bold text-blue-400">🔍 Debug Info (Klicken zum Öffnen)</summary>
-            <div class="mt-3 text-sm space-y-1 text-gray-300">
-              <p><strong>stats.length:</strong> {{ stats.length }}</p>
-              <p><strong>loading:</strong> {{ loading }}</p>
-              <p><strong>error:</strong> {{ error }}</p>
-              <p><strong>isGuest:</strong> {{ isGuest }}</p>
-              <p><strong>goalMl:</strong> {{ goalMl }}</p>
-              <p><strong>yAxisMax:</strong> {{ yAxisMax }}</p>
-              <p><strong>Stats data:</strong></p>
-              <pre class="bg-gray-900 p-2 rounded text-xs overflow-auto max-h-40">{{ JSON.stringify(stats, null, 2) }}</pre>
-              <button
-                @click="loadStats()"
-                class="mt-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-bold"
-              >
-                🔄 Reload Stats
-              </button>
-            </div>
-          </details>
-        </div>
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Durchschnitt -->
@@ -576,11 +553,6 @@ function formatDateLong(dateString: string): string {
 
             <!-- Bars Container -->
             <div class="absolute left-14 right-0 top-0 bottom-8 flex items-end justify-around gap-2">
-              <!-- Debug: Stats count -->
-              <div v-if="stats.length === 0" class="absolute inset-0 flex items-center justify-center">
-                <p class="text-red-500 font-bold">⚠️ stats.length = 0</p>
-              </div>
-
               <div
                 v-for="(day, index) in stats"
                 :key="day.date"
@@ -588,9 +560,6 @@ function formatDateLong(dateString: string): string {
               >
                 <!-- Bar -->
                 <div class="relative w-full flex items-end justify-center" style="height: 100%;">
-                  <!-- Debug marker for each bar -->
-                  <div v-if="day.consumedMl === 0" class="absolute bottom-0 left-0 right-0 h-1 bg-red-500"></div>
-
                   <div
                     class="w-full rounded-t-lg transition-all duration-500 hover:scale-105 cursor-pointer relative"
                     :class="`bg-gradient-to-t ${getBarColor(day.percentage)}`"
@@ -598,7 +567,6 @@ function formatDateLong(dateString: string): string {
                       height: getBarHeight(day.consumedMl) + '%',
                       minHeight: day.consumedMl > 0 ? '4px' : '0'
                     }"
-                    :title="`${day.consumedMl}ml, Height: ${getBarHeight(day.consumedMl)}%`"
                   >
                     <!-- Tooltip on hover -->
                     <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
