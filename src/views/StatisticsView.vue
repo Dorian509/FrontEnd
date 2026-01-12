@@ -568,16 +568,16 @@ function formatDateLong(dateString: string): string {
             </div>
 
             <!-- Bars Container -->
-            <div class="absolute left-14 right-0 top-0 bottom-8 flex items-end justify-around gap-2">
+            <div class="absolute left-14 right-0 top-0 bottom-8 flex justify-around gap-2">
               <div
                 v-for="(day, index) in stats"
                 :key="day.date"
                 class="flex-1 flex flex-col items-center gap-3 group"
               >
-                <!-- Bar -->
-                <div class="relative w-full flex items-end justify-center" style="height: 100%;">
+                <!-- Bar Area (relative container for absolute positioning) -->
+                <div class="relative w-full flex-1">
                   <div
-                    class="w-full rounded-t-lg transition-all duration-500 hover:scale-105 cursor-pointer relative"
+                    class="absolute bottom-0 left-0 right-0 w-full rounded-t-lg transition-all duration-500 hover:scale-105 cursor-pointer"
                     :class="`bg-gradient-to-t ${getBarColor(day.percentage)}`"
                     :style="{
                       height: getBarHeight(day.consumedMl) + '%',
