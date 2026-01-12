@@ -584,12 +584,12 @@ function formatDateLong(dateString: string): string {
                       minHeight: day.consumedMl > 0 ? '4px' : '0'
                     }"
                   >
-                    <!-- Debug: Show bar height calculation -->
+                    <!-- Goal percentage badge -->
                     <div
                       v-if="day.consumedMl > 0"
                       class="absolute top-1 left-1/2 transform -translate-x-1/2 text-[10px] font-mono bg-black/70 px-1 rounded text-yellow-400"
                     >
-                      {{ getBarHeight(day.consumedMl).toFixed(0) }}%
+                      {{ day.percentage }}%
                     </div>
 
                     <!-- Tooltip on hover -->
@@ -606,15 +606,6 @@ function formatDateLong(dateString: string): string {
                     <div class="absolute top-2 left-1/2 transform -translate-x-1/2 text-xs font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity">
                       {{ day.percentage }}%
                     </div>
-                  </div>
-
-                  <!-- Goal Reached Icon (positioned at goal line level) -->
-                  <div
-                    v-if="day.consumedMl >= day.goalMl"
-                    class="absolute w-full flex justify-center pointer-events-none"
-                    :style="{ bottom: goalLinePosition + '%' }"
-                  >
-                    <font-awesome-icon icon="check-circle" class="text-green-500 text-lg drop-shadow-lg" />
                   </div>
                 </div>
 
