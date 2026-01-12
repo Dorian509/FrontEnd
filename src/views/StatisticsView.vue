@@ -354,12 +354,22 @@ const yAxisLabels = computed(() => {
 // Ziellinie Position berechnen (in Prozent von unten)
 const goalLinePosition = computed(() => {
   const percentage = (goalMl.value / yAxisMax.value) * 100
+
+  // FIX: Bars container hat bottom-8 (32px = 10% von 320px h-80 Chart)
+  // Verfügbare Höhe für Bars: 90% (288px)
+  // Goal line muss im gleichen Koordinatensystem sein:
+  // Position = bottom-8 offset (10%) + (percentage * verfügbare Höhe (90%))
+  const adjustedPercentage = 10 + (percentage * 0.9)
+
   console.log('🎯 Goal line position:', {
-    goalMl: goalMl.value,
-    yAxisMax: yAxisMax.value,
-    percentage: percentage.toFixed(2) + '%'
+    goalMl: goalMl.value + 'ml',
+    yAxisMax: yAxisMax.value + 'ml',
+    rawPercentage: percentage.toFixed(2) + '%',
+    adjustedPercentage: adjustedPercentage.toFixed(2) + '%',
+    formula: '10% (bottom-8) + (' + percentage.toFixed(1) + '% * 0.9)'
   })
-  return percentage
+
+  return adjustedPercentage
 })
 
 function getBarHeight(consumedMl: number): number {
