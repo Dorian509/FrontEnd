@@ -323,19 +323,6 @@ const yAxisMax = computed(() => {
   // Minimum 3000ml für gute Darstellung
   const finalMax = Math.max(roundedMax, 3000)
 
-  console.log('📊 ========================================')
-  console.log('📊 Y-AXIS CALCULATION')
-  console.log('📊 ========================================')
-  console.log('📊 Stats count:', stats.value.length)
-  console.log('📊 All consumedMl values:', stats.value.map(s => s.consumedMl))
-  console.log('📊 All goalMl values:', stats.value.map(s => s.goalMl))
-  console.log('📊 maxConsumed:', maxConsumed + 'ml')
-  console.log('📊 maxGoal:', maxGoal + 'ml')
-  console.log('📊 dataMax:', dataMax + 'ml')
-  console.log('📊 roundedMax:', roundedMax + 'ml')
-  console.log('📊 finalMax (yAxisMax):', finalMax + 'ml')
-  console.log('📊 ========================================')
-
   return finalMax
 })
 
@@ -351,45 +338,15 @@ const yAxisLabels = computed(() => {
   ]
 })
 
-// Ziellinie Position berechnen (in Prozent von unten)
-const goalLinePosition = computed(() => {
-  const percentage = (goalMl.value / yAxisMax.value) * 100
-
-  // FIX: Bars container hat bottom-8 (32px = 10% von 320px h-80 Chart)
-  // Verfügbare Höhe für Bars: 90% (288px)
-  // Goal line muss im gleichen Koordinatensystem sein:
-  // Position = bottom-8 offset (10%) + (percentage * verfügbare Höhe (90%))
-  const adjustedPercentage = 10 + (percentage * 0.9)
-
-  console.log('🎯 Goal line position:', {
-    goalMl: goalMl.value + 'ml',
-    yAxisMax: yAxisMax.value + 'ml',
-    rawPercentage: percentage.toFixed(2) + '%',
-    adjustedPercentage: adjustedPercentage.toFixed(2) + '%',
-    formula: '10% (bottom-8) + (' + percentage.toFixed(1) + '% * 0.9)'
-  })
-
-  return adjustedPercentage
-})
-
 function getBarHeight(consumedMl: number): number {
   if (consumedMl === 0) {
     return 0
   }
 
-  // Berechne Höhe relativ zur Y-Achse (nicht zum Goal!)
   const percentage = (consumedMl / yAxisMax.value) * 100
-
-  console.log('📏 getBarHeight:', {
-    consumedMl: consumedMl + 'ml',
-    yAxisMax: yAxisMax.value + 'ml',
-    calculation: `${consumedMl} / ${yAxisMax.value} * 100`,
-    percentage: percentage.toFixed(2) + '%'
-  })
 
   // Mindesthöhe nur für sehr kleine Werte (< 1%)
   if (percentage < 1 && percentage > 0) {
-    console.log('   → Too small, using minimum 3%')
     return 3
   }
 
@@ -555,15 +512,6 @@ function formatDateLong(dateString: string): string {
               <font-awesome-icon icon="chart-column" class="text-game-purple" />
               Letzte 7 Tage
             </h3>
-
-            <!-- Debug Info Badge -->
-            <div class="text-xs font-mono bg-blue-900/50 px-3 py-2 rounded border border-blue-700">
-              <div class="flex gap-4">
-                <span class="text-blue-400">yAxisMax: <span class="text-white font-bold">{{ yAxisMax }}ml</span></span>
-                <span class="text-green-400">Goal: <span class="text-white font-bold">{{ goalMl }}ml</span></span>
-                <span class="text-purple-400">Chart H: <span class="text-white font-bold">320px</span></span>
-              </div>
-            </div>
           </div>
 
           <!-- Chart -->
@@ -607,8 +555,6 @@ function formatDateLong(dateString: string): string {
                       <div class="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-xl border border-gray-700">
                         <p class="font-bold">{{ day.consumedMl }}ml</p>
                         <p class="text-gray-400">{{ day.percentage }}% vom Ziel</p>
-                        <p class="text-yellow-400">Bar: {{ getBarHeight(day.consumedMl).toFixed(1) }}% Höhe</p>
-                        <p class="text-gray-500 text-[10px]">yMax: {{ yAxisMax }}ml</p>
                       </div>
                     </div>
 
@@ -625,16 +571,6 @@ function formatDateLong(dateString: string): string {
                   <p class="text-xs text-gray-400">{{ formatDateLong(day.date).slice(0, 5) }}</p>
                 </div>
               </div>
-            </div>
-
-            <!-- Goal Line (dynamisch positioniert) -->
-            <div
-              class="absolute left-14 right-0 border-t-2 border-dashed border-green-500 opacity-75"
-              :style="{ bottom: goalLinePosition + '%' }"
-            >
-              <span class="absolute -left-12 -top-3 text-xs text-green-500 font-medium bg-game-dark px-1 rounded">
-                Ziel: {{ goalMl }}ml
-              </span>
             </div>
           </div>
 
