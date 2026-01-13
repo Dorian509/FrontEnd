@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useAuth } from '@/composables/useAuth'
+import { VALIDATION } from '@/constants'
 
 const { isGuest, upgradeGuestToUser, collectGuestData } = useAuth()
 
@@ -52,13 +53,13 @@ async function handleUpgrade() {
     return
   }
 
-  if (!email.value.includes('@')) {
+  if (!VALIDATION.EMAIL.PATTERN.test(email.value)) {
     error.value = 'Bitte gib eine gültige E-Mail-Adresse ein'
     return
   }
 
-  if (password.value.length < 6) {
-    error.value = 'Passwort muss mindestens 6 Zeichen lang sein'
+  if (password.value.length < VALIDATION.PASSWORD.MIN_LENGTH) {
+    error.value = `Passwort muss mindestens ${VALIDATION.PASSWORD.MIN_LENGTH} Zeichen lang sein`
     return
   }
 

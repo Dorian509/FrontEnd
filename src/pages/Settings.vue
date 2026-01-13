@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { apiUrl } from '@/utils/api'
 import type { ActivityLevel, Climate, Profile } from '@/types'
+import { VALIDATION } from '@/constants'
 
 const router = useRouter()
 const { user, isGuest, logout, getAuthHeaders } = useAuth()
@@ -70,8 +71,8 @@ async function saveProfile() {
   try {
     // Validation
     const weight = Number(weightKg.value)
-    if (isNaN(weight) || weight < 20 || weight > 200) {
-      throw new Error('Gewicht muss zwischen 20 und 200 kg sein')
+    if (isNaN(weight) || weight < VALIDATION.WEIGHT.MIN || weight > VALIDATION.WEIGHT.MAX) {
+      throw new Error(`Gewicht muss zwischen ${VALIDATION.WEIGHT.MIN} und ${VALIDATION.WEIGHT.MAX} kg sein`)
     }
 
     if (isGuest.value) {
@@ -135,7 +136,7 @@ function calcEstimatedGoal() {
     const weight = Number(weightKg.value)
 
     // Validation
-    if (!weight || isNaN(weight) || weight < 20 || weight > 200) {
+    if (!weight || isNaN(weight) || weight < VALIDATION.WEIGHT.MIN || weight > VALIDATION.WEIGHT.MAX) {
       return 2500 // Default fallback
     }
 
@@ -279,16 +280,16 @@ async function handleLogout() {
                 <input
                   v-model.number="weightKg"
                   type="range"
-                  min="20"
-                  max="200"
-                  step="1"
+                  :min="VALIDATION.WEIGHT.MIN"
+                  :max="VALIDATION.WEIGHT.MAX"
+                  :step="VALIDATION.WEIGHT.STEP"
                   class="w-full h-3 bg-gray-700 rounded-full appearance-none cursor-pointer
                          [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-r [&::-webkit-slider-thumb]:from-game-cyan [&::-webkit-slider-thumb]:to-game-blue [&::-webkit-slider-thumb]:shadow-xl [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110
                          [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-game-cyan [&::-moz-range-thumb]:shadow-xl [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:transition-transform [&::-moz-range-thumb]:hover:scale-110"
                 />
                 <div class="flex justify-between text-sm text-gray-400 font-medium">
-                  <span>20 kg</span>
-                  <span>200 kg</span>
+                  <span>{{ VALIDATION.WEIGHT.MIN }} kg</span>
+                  <span>{{ VALIDATION.WEIGHT.MAX }} kg</span>
                 </div>
               </div>
 
