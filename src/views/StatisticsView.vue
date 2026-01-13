@@ -3,35 +3,13 @@ import { ref, onMounted, computed, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { apiUrl } from '@/utils/api'
+import type { Source, ActivityLevel, Climate, DayStats, Profile, IntakeEntry } from '@/types'
 
 const router = useRouter()
 const { user, isGuest, getAuthHeaders } = useAuth()
 
-type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS'
-type ActivityLevel = 'LOW' | 'MEDIUM' | 'HIGH'
-type Climate = 'NORMAL' | 'HOT'
-
-interface Intake {
-  id: number
-  userId: number
-  volumeMl: number
-  source: Source
-  timestamp: string
-}
-
-interface DayStats {
-  date: string
-  consumedMl: number
-  goalMl: number
-  percentage: number
-}
-
-interface Profile {
-  id: number
-  weightKg: number
-  activityLevel: ActivityLevel
-  climate: Climate
-}
+// Use IntakeEntry from types instead of local Intake interface
+type Intake = IntakeEntry
 
 const stats = ref<DayStats[]>([])
 const loading = ref(true)

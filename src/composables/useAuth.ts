@@ -1,24 +1,8 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { GuestDataExport } from '@/types/guest'
+import type { User, LoginCredentials, RegisterData } from '@/types'
 import { apiUrl } from '@/utils/api'
-
-interface User {
-  id: number
-  email: string
-  name: string
-}
-
-interface LoginCredentials {
-  email: string
-  password: string
-}
-
-interface RegisterData {
-  email: string
-  password: string
-  name: string
-}
 
 // Global state (singleton pattern)
 const user = ref<User | null>(null)

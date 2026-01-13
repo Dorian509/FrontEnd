@@ -3,20 +3,10 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { apiUrl } from '@/utils/api'
+import type { ActivityLevel, Climate, Profile } from '@/types'
 
 const router = useRouter()
 const { user, isGuest, logout, getAuthHeaders } = useAuth()
-
-type ActivityLevel = 'LOW' | 'MEDIUM' | 'HIGH'
-type Climate = 'NORMAL' | 'HOT'
-
-interface Profile {
-  id: number
-  weightKg: number
-  activityLevel: ActivityLevel
-  climate: Climate
-  timezone: string
-}
 
 const userId = ref(localStorage.getItem('userId') || '1')
 const profile = ref<Profile | null>(null)

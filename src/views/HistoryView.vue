@@ -3,19 +3,10 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { apiUrl } from '@/utils/api'
+import type { Source, IntakeEntry } from '@/types'
 
 const router = useRouter()
 const { user, isGuest, getAuthHeaders } = useAuth()
-
-type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS'
-
-interface IntakeEntry {
-  id?: number
-  volumeMl: number
-  source: Source
-  timestamp: string
-  date: string
-}
 
 const history = ref<IntakeEntry[]>([])
 const loading = ref(true)

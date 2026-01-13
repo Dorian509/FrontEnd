@@ -4,31 +4,10 @@ import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { apiUrl, fetchWithRetry, parseJsonSafely } from '@/utils/api'
 import GuestBanner from '@/components/GuestBanner.vue'
+import type { HydrationData, Profile, Source, IntakeEntry } from '@/types'
 
 const router = useRouter()
 const { user, isGuest, logout, getAuthHeaders, checkDailyReset } = useAuth()
-
-interface HydrationData {
-  consumedMl: number
-  goalMl: number
-  remainingMl: number
-}
-
-interface Profile {
-  id: number
-  weightKg: number
-  activityLevel: 'LOW' | 'MEDIUM' | 'HIGH'
-  climate: 'NORMAL' | 'HOT'
-}
-
-type Source = 'SIP' | 'DOUBLE_SIP' | 'GLASS'
-
-interface IntakeEntry {
-  volumeMl: number
-  source: Source
-  timeAgo: string
-  timestamp: string
-}
 
 const userId = ref(localStorage.getItem('userId') || '1')
 const selectedSource = ref<Source>('SIP')
