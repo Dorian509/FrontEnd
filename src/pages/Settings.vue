@@ -46,7 +46,7 @@ async function loadProfile() {
         headers: getAuthHeaders()
       })
       if (!res.ok) throw new Error('HTTP ' + res.status)
-      const loadedProfile = await res.json()
+      const loadedProfile: Profile = await res.json()
 
       profile.value = loadedProfile
       weightKg.value = Number(loadedProfile.weightKg) || 70
@@ -118,7 +118,7 @@ async function saveProfile() {
         console.error('❌ API Error:', errorText)
         throw new Error('Profil konnte nicht gespeichert werden')
       }
-      const updated = await res.json()
+      const updated: Profile = await res.json()
       profile.value = updated
       successMessage.value = 'Einstellungen erfolgreich gespeichert!'
       setTimeout(() => (successMessage.value = null), 3000)

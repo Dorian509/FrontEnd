@@ -82,8 +82,8 @@ async function loadHistory() {
       })
 
       if (!res.ok) throw new Error('HTTP ' + res.status)
-      const data = await res.json()
-      history.value = data.map((entry: any) => ({
+      const data: IntakeEntry[] = await res.json()
+      history.value = data.map((entry: IntakeEntry) => ({
         ...entry,
         date: new Date(entry.timestamp).toISOString().split('T')[0]
       }))

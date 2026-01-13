@@ -2,11 +2,9 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { apiUrl } from '@/utils/api'
+import type { ActivityLevel, Climate, Profile } from '@/types'
 
 const router = useRouter()
-
-type ActivityLevel = 'LOW' | 'MEDIUM' | 'HIGH'
-type Climate = 'NORMAL' | 'HOT'
 
 const weightKg = ref(70)
 const activityLevel = ref<ActivityLevel>('MEDIUM')
@@ -29,8 +27,8 @@ async function saveProfile() {
       })
     })
     if (!res.ok) throw new Error('HTTP ' + res.status)
-    const profile = await res.json()
-    localStorage.setItem('userId', profile.id)
+    const profile: Profile = await res.json()
+    localStorage.setItem('userId', String(profile.id))
     router.push('/dashboard')
   } catch (e) {
     error.value = String(e)

@@ -80,7 +80,7 @@ async function loadGoal() {
         headers: getAuthHeaders()
       })
       if (res.ok) {
-        profile.value = await res.json()
+        profile.value = await res.json() as Profile
         goalMl.value = calculateDailyGoal(profile.value)
       } else {
         console.error('❌ Failed to load profile, HTTP', res.status)

@@ -93,7 +93,12 @@ export function useAuth() {
         throw new Error(errorData.error || errorData.message || `HTTP ${response.status}`)
       }
 
-      const data = await response.json()
+      interface LoginResponse {
+        token: string
+        user: User
+      }
+
+      const data: LoginResponse = await response.json()
 
       // Save to state
       token.value = data.token
@@ -170,7 +175,12 @@ export function useAuth() {
         throw new Error(errorData.error || errorData.message || `HTTP ${response.status}`)
       }
 
-      const responseData = await response.json()
+      interface RegisterResponse {
+        token: string
+        user: User
+      }
+
+      const responseData: RegisterResponse = await response.json()
 
       // 3. Speichere Auth in State
       token.value = responseData.token

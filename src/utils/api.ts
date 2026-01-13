@@ -8,10 +8,6 @@
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://hydratemate-backend.onrender.com'
 
-// Log API Base on startup
-console.log('🌐 API_BASE configured:', API_BASE)
-console.log('📝 VITE_API_URL env var:', import.meta.env.VITE_API_URL || 'NOT SET (using fallback)')
-
 /**
  * Constructs full API URL for the given path
  * @param path - API path (e.g., '/api/auth/login')
@@ -41,8 +37,6 @@ export async function fetchWithRetry(
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      console.log(`🔄 Attempt ${attempt}/${maxRetries}: ${url}`)
-
       const response = await fetch(url, {
         ...options,
         headers: {
@@ -67,15 +61,12 @@ export async function fetchWithRetry(
         throw new Error(`Invalid content-type: ${contentType}`)
       }
 
-      console.log(`✅ Success on attempt ${attempt}`)
       return response
 
     } catch (error) {
       lastError = error as Error
-      console.warn(`⚠️ Attempt ${attempt} failed:`, lastError.message)
 
       if (attempt < maxRetries) {
-        console.log(`⏳ Retrying in ${retryDelay / 1000}s... (Backend might be waking up)`)
         await new Promise(resolve => setTimeout(resolve, retryDelay))
       }
     }
