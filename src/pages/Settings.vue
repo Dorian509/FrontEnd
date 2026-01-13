@@ -31,7 +31,7 @@ async function loadProfile() {
       if (savedProfile) {
         const guestProfile = JSON.parse(savedProfile)
         profile.value = { id: 0, ...guestProfile, timezone: 'Europe/Berlin' }
-        weightKg.value = Number(guestProfile.weightKg) || 70
+        weightKg.value = Math.round(Number(guestProfile.weightKg)) || 70
         activityLevel.value = guestProfile.activityLevel || 'MEDIUM'
         climate.value = guestProfile.climate || 'NORMAL'
       } else {
@@ -49,7 +49,7 @@ async function loadProfile() {
       const loadedProfile: Profile = await res.json()
 
       profile.value = loadedProfile
-      weightKg.value = Number(loadedProfile.weightKg) || 70
+      weightKg.value = Math.round(Number(loadedProfile.weightKg)) || 70
       activityLevel.value = loadedProfile.activityLevel || 'MEDIUM'
       climate.value = loadedProfile.climate || 'NORMAL'
     }
@@ -149,10 +149,7 @@ function calcEstimatedGoal() {
 
     if (climate.value === 'HOT') climateBonus = 500
 
-    const total = baseGoal + activityBonus + climateBonus
-    const rounded = Math.round(total / 50) * 50
-
-    return rounded
+    return baseGoal + activityBonus + climateBonus
   } catch (e) {
     console.error('❌ Goal calculation error:', e)
     return 2500 // Safe fallback
