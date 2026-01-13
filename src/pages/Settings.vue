@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
 import { apiUrl } from '@/utils/api'
 import type { ActivityLevel, Climate, Profile } from '@/types'
-import { VALIDATION } from '@/constants'
+import { VALIDATION, UI } from '@/constants'
 
 const router = useRouter()
 const { user, isGuest, logout, getAuthHeaders } = useAuth()
@@ -95,7 +95,7 @@ async function saveProfile() {
       }
 
       successMessage.value = 'Einstellungen erfolgreich gespeichert!'
-      setTimeout(() => (successMessage.value = null), 3000)
+      setTimeout(() => (successMessage.value = null), UI.SUCCESS_MESSAGE_DURATION)
     } else {
       // Speichere via API für authentifizierte User
       const body = {
@@ -121,7 +121,7 @@ async function saveProfile() {
       const updated: Profile = await res.json()
       profile.value = updated
       successMessage.value = 'Einstellungen erfolgreich gespeichert!'
-      setTimeout(() => (successMessage.value = null), 3000)
+      setTimeout(() => (successMessage.value = null), UI.SUCCESS_MESSAGE_DURATION)
     }
   } catch (e) {
     console.error('❌ Save error:', e)

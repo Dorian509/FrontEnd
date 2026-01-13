@@ -5,6 +5,7 @@ import { useAuth } from '@/composables/useAuth'
 import { apiUrl, fetchWithRetry, parseJsonSafely } from '@/utils/api'
 import GuestBanner from '@/components/GuestBanner.vue'
 import type { HydrationData, Profile, Source, IntakeEntry } from '@/types'
+import { UI } from '@/constants'
 
 const router = useRouter()
 const { user, isGuest, logout, getAuthHeaders, checkDailyReset } = useAuth()
@@ -27,7 +28,7 @@ const hasShownCelebration = ref(false)
 // Watch für Goal Completion
 const goalReached = computed(() => {
   if (!data.value) return false
-  const percentage = pct(data.value.consumedMl, data.value.goalMl)
+  const percentage = calculatePercentage(data.value.consumedMl, data.value.goalMl)
   return percentage >= 100
 })
 
@@ -110,9 +111,10 @@ async function load() {
       }
     } else {
       // Load from API for authenticated user with retry logic
+      const WAKING_UP_DELAY = 4000 // Show message after 4 seconds (after first retry attempt)
       const wakingUpTimeout = setTimeout(() => {
         isWakingUp.value = true
-      }, 4000)
+      }, WAKING_UP_DELAY)
 
       try {
         const url = apiUrl(`/api/hydration/today/${user.value?.id || userId.value}`)
@@ -145,9 +147,10 @@ async function loadSilently() {
     }
 
     const url = apiUrl(`/api/hydration/today/${user.value?.id || userId.value}`)
+    const SILENT_RETRY_DELAY = 2000
     const response = await fetchWithRetry(url, {
       headers: getAuthHeaders()
-    }, 3, 2000) // Fewer retries for silent reload
+    }, 3, SILENT_RETRY_DELAY) // Fewer retries for silent reload
 
     data.value = await parseJsonSafely<HydrationData>(response)
   } catch (e) {
@@ -276,7 +279,7 @@ async function addIntake(ml: number, source: Source | null = null) {
     // 3. Toast sofort zeigen mit Label
     const sourceLabel = usedSource ? getSourceLabel(usedSource, ml) : 'Menge'
     toast.value = `${ml}ml ${sourceLabel} hinzugefügt`
-    setTimeout(() => (toast.value = null), 2000)
+    setTimeout(() => (toast.value = null), UI.TOAST_DURATION)
 
     if (isGuest.value) {
       // 4a. GUEST MODE: Save to LocalStorage
@@ -313,7 +316,7 @@ async function addIntake(ml: number, source: Source | null = null) {
           volumeMl: ml,
           source: usedSource
         })
-      }, 3, 2000) // Fewer retries for adding intake
+      }, 3, SILENT_RETRY_DELAY) // Fewer retries for adding intake
 
       // 5. Stilles Update im Hintergrund - KEIN loading state
       await loadSilently()
@@ -328,7 +331,7 @@ async function addIntake(ml: number, source: Source | null = null) {
     intakeHistory.value.shift() // Entferne den ersten Eintrag wieder
     error.value = String(e)
     toast.value = 'Fehler beim Hinzufügen'
-    setTimeout(() => (toast.value = null), 2000)
+    setTimeout(() => (toast.value = null), UI.TOAST_DURATION)
   } finally {
     isAdding.value = false
   }
@@ -363,7 +366,7 @@ function updateGuestStats(ml: number) {
   localStorage.setItem('guestStats', JSON.stringify(sortedStats))
 }
 
-function pct(consumed: number, goal: number) {
+function calculatePercentage(consumed: number, goal: number) {
   if (!goal) return 0
   return Math.min(100, Math.round((consumed / goal) * 100))
 }
@@ -651,14 +654,14 @@ async function handleLogout() {
             <div class="h-8 bg-gray-700 rounded-full shadow-inner overflow-hidden">
               <div
                   class="h-full bg-gradient-to-r from-game-cyan via-game-blue to-game-purple rounded-full transition-all duration-700 ease-out shadow-lg relative"
-                  :style="{ width: pct(data?.consumedMl ?? 0, data?.goalMl ?? 0) + '%' }"
+                  :style="{ width: calculatePercentage(data?.consumedMl ?? 0, data?.goalMl ?? 0) + '%' }"
               >
                 <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
               </div>
             </div>
             <div class="flex justify-between text-gray-400 text-sm font-medium">
               <span class="flex items-center gap-2">
-                <font-awesome-icon icon="star" class="text-yellow-500" /> {{ pct(data?.consumedMl ?? 0, data?.goalMl ?? 0) }}% erreicht
+                <font-awesome-icon icon="star" class="text-yellow-500" /> {{ calculatePercentage(data?.consumedMl ?? 0, data?.goalMl ?? 0) }}% erreicht
               </span>
             </div>
           </div>
@@ -986,7 +989,7 @@ async function handleLogout() {
               <div class="w-full bg-green-900/30 rounded-full h-3 mb-2">
                 <div
                   class="bg-gradient-to-r from-green-400 to-emerald-400 h-3 rounded-full transition-all duration-500"
-                  :style="{ width: Math.min(pct(data.consumedMl, data.goalMl), 100) + '%' }"
+                  :style="{ width: Math.min(calculatePercentage(data.consumedMl, data.goalMl), 100) + '%' }"
                 ></div>
               </div>
             </div>
