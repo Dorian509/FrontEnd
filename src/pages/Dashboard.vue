@@ -58,23 +58,10 @@ const todayIntakes = computed(() => {
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0)
   const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59)
 
-  console.log('🔍 Filtering for today:', todayStart.toISOString(), 'to', todayEnd.toISOString())
-  console.log('📋 Total intakes in history:', intakeHistory.value.length)
-
   const filtered = intakeHistory.value.filter(intake => {
     const intakeDate = new Date(intake.timestamp)
-    const isToday = intakeDate >= todayStart && intakeDate <= todayEnd
-
-    if (isToday) {
-      console.log('✅ Today:', intake.volumeMl + 'ml at', intakeDate.toISOString())
-    } else {
-      console.log('❌ Not today:', intake.volumeMl + 'ml at', intakeDate.toISOString())
-    }
-
-    return isToday
+    return intakeDate >= todayStart && intakeDate <= todayEnd
   })
-
-  console.log('📅 Today intakes count:', filtered.length)
 
   // Sort by timestamp DESC (newest first)
   const sorted = filtered.sort((a, b) => {
@@ -82,10 +69,7 @@ const todayIntakes = computed(() => {
   })
 
   // Return only the last 3 entries
-  const result = sorted.slice(0, 3)
-  console.log('🎯 Showing last 3 entries:', result.length)
-
-  return result
+  return sorted.slice(0, 3)
 })
 
 watch(goalReached, (newVal, oldVal) => {
@@ -93,8 +77,6 @@ watch(goalReached, (newVal, oldVal) => {
   if (newVal && !oldVal && !hasShownCelebration.value) {
     celebrateGoal.value = true
     hasShownCelebration.value = true
-
-    console.log('🎉 Goal reached! Showing celebration')
 
     // Vibration für Mobile
     if (navigator.vibrate) {
@@ -121,13 +103,11 @@ async function load() {
   try {
     if (isGuest.value) {
       // Load from LocalStorage for guest mode
-      console.log('📥 Loading hydration data for guest mode...')
       checkDailyReset()
       const savedData = localStorage.getItem('guestHydrationData')
 
       if (savedData) {
         data.value = JSON.parse(savedData)
-        console.log('📦 Loaded hydration data:', data.value)
       } else {
         // Initialize default data for new guest
         data.value = {
@@ -136,7 +116,6 @@ async function load() {
           remainingMl: 2500
         }
         localStorage.setItem('guestHydrationData', JSON.stringify(data.value))
-        console.log('🆕 Initialized new guest hydration data')
       }
 
       // Initialize guestStats if not exists
@@ -152,9 +131,6 @@ async function load() {
       }
     } else {
       // Load from API for authenticated user with retry logic
-      console.log('📊 Loading dashboard for user:', user.value?.id)
-
-      // Show "waking up" message after first retry
       const wakingUpTimeout = setTimeout(() => {
         isWakingUp.value = true
       }, 4000)
@@ -169,7 +145,6 @@ async function load() {
         isWakingUp.value = false
 
         data.value = await parseJsonSafely<HydrationData>(response)
-        console.log('✅ Dashboard data loaded')
       } catch (fetchError) {
         clearTimeout(wakingUpTimeout)
         throw fetchError
@@ -263,42 +238,22 @@ async function loadProfile() {
 
 async function loadIntakeHistory() {
   try {
-    console.log('📥 Loading intake history...')
-
     if (isGuest.value) {
-      console.log('👤 Guest Mode: Loading from localStorage')
-
       const stored = localStorage.getItem('guestHistory')
 
       if (stored) {
-        const parsed = JSON.parse(stored)
-        intakeHistory.value = parsed
-        console.log('✅ Loaded from localStorage:', parsed.length, 'entries')
-
-        // Debug: Show all entries
-        parsed.forEach((entry: IntakeEntry, index: number) => {
-          console.log(`  ${index + 1}. ${entry.volumeMl}ml at ${new Date(entry.timestamp).toLocaleString()}`)
-        })
+        intakeHistory.value = JSON.parse(stored)
       } else {
-        console.log('ℹ️ No history in localStorage yet')
         intakeHistory.value = []
       }
-
     } else {
-      console.log('👨 User Mode: Loading from API')
-
       const response = await fetchWithRetry(
         apiUrl(`/api/intakes/${user.value?.id || userId.value}/recent?limit=50`),
         { headers: getAuthHeaders() }
       )
 
-      const data = await parseJsonSafely<IntakeEntry[]>(response)
-      intakeHistory.value = data
-      console.log('✅ Loaded from API:', data.length, 'entries')
+      intakeHistory.value = await parseJsonSafely<IntakeEntry[]>(response)
     }
-
-    console.log('📊 Total entries in intakeHistory:', intakeHistory.value.length)
-
   } catch (error) {
     console.error('❌ Failed to load intake history:', error)
     intakeHistory.value = []
@@ -306,10 +261,6 @@ async function loadIntakeHistory() {
 }
 
 onMounted(async () => {
-  console.log('📊 Dashboard mounted')
-  console.log('👤 Guest Mode:', isGuest.value)
-  console.log('👨 User:', user.value)
-
   // Load dashboard data (progress, goal, etc.)
   await load()
 
@@ -318,10 +269,6 @@ onMounted(async () => {
 
   // Load intake history (for "Heute getrunken")
   await loadIntakeHistory()
-
-  console.log('✅ Dashboard fully loaded')
-  console.log('📊 Data:', data.value)
-  console.log('📋 History entries:', intakeHistory.value.length)
 })
 
 async function addIntake(ml: number, source: Source | null = null) {
@@ -537,14 +484,10 @@ function getSourceLabel(source: Source | string, volumeMl?: number): string {
 }
 
 async function handleLogout() {
-  console.log('🚪 Logging out...')
-
   const result = logout()
 
   if (result.success) {
-    console.log('✅ Logout successful, redirecting to login...')
     await router.push('/login')
-    console.log('✅ Navigation to login complete')
   }
 }
 </script>

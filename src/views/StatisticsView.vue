@@ -66,38 +66,8 @@ const totalStats = computed(() => {
 })
 
 onMounted(async () => {
-  console.log('📊 ========================================')
-  console.log('📊 STATISTICS VIEW MOUNTED')
-  console.log('📊 ========================================')
-  console.log('👤 User:', user.value)
-  console.log('🎭 isGuest:', isGuest.value)
-
   await loadGoal()
   await loadStats()
-
-  console.log('📊 ========================================')
-  console.log('📊 AFTER LOADING - FINAL STATE')
-  console.log('📊 ========================================')
-  console.log('📊 stats.value:', stats.value)
-  console.log('📊 stats.value.length:', stats.value.length)
-  console.log('📊 goalMl.value:', goalMl.value)
-  console.log('📊 yAxisMax.value:', yAxisMax.value)
-
-  if (stats.value.length > 0) {
-    console.log('📊 STATS DETAILS:')
-    stats.value.forEach((day, index) => {
-      console.log(`  Day ${index + 1}:`, {
-        date: day.date,
-        consumedMl: day.consumedMl,
-        goalMl: day.goalMl,
-        percentage: day.percentage,
-        barHeight: getBarHeight(day.consumedMl) + '%'
-      })
-    })
-  } else {
-    console.warn('⚠️ stats.value is EMPTY!')
-  }
-  console.log('📊 ========================================')
 })
 
 // Berechne Tagesziel basierend auf Profil
@@ -110,16 +80,7 @@ function calculateDailyGoal(profileData: Profile): number {
   if (profileData.activityLevel === 'HIGH') activityBonus = 500
   if (profileData.climate === 'HOT') climateBonus = 500
 
-  const total = baseGoal + activityBonus + climateBonus
-  console.log('📊 Calculated daily goal:', {
-    weight: profileData.weightKg,
-    baseGoal,
-    activityBonus,
-    climateBonus,
-    total
-  })
-
-  return total
+  return baseGoal + activityBonus + climateBonus
 }
 
 async function loadGoal() {
@@ -127,27 +88,22 @@ async function loadGoal() {
     if (isGuest.value) {
       // Lade aus LocalStorage für Gast-Modus
       const savedProfile = localStorage.getItem('guestProfile')
-      console.log('📥 Loading guest profile from LocalStorage:', savedProfile)
 
       if (savedProfile) {
         const guestProfile = JSON.parse(savedProfile)
         profile.value = { id: 0, ...guestProfile }
         goalMl.value = calculateDailyGoal(profile.value)
-        console.log('✅ Guest goal calculated:', goalMl.value, 'ml')
       } else {
-        console.log('⚠️ No guest profile found, using default 2500ml')
         goalMl.value = 2500
       }
     } else if (user.value?.id) {
       // Lade von API für authentifizierte User
-      console.log('📡 Loading profile from API for user:', user.value.id)
       const res = await fetch(apiUrl(`/api/profile/${user.value.id}`), {
         headers: getAuthHeaders()
       })
       if (res.ok) {
         profile.value = await res.json()
         goalMl.value = calculateDailyGoal(profile.value)
-        console.log('✅ User goal calculated:', goalMl.value, 'ml')
       } else {
         console.error('❌ Failed to load profile, HTTP', res.status)
         goalMl.value = 2500
@@ -163,35 +119,22 @@ async function loadStats() {
   loading.value = true
   error.value = null
 
-  console.log('📥 ========================================')
-  console.log('📥 LOADING STATS')
-  console.log('📥 ========================================')
-  console.log('🎭 isGuest:', isGuest.value)
-
   try {
     if (isGuest.value) {
-      console.log('👤 Guest Mode: Loading from localStorage...')
-
       // Lade aus LocalStorage
       const savedStats = localStorage.getItem('guestStats')
-      console.log('💾 localStorage.getItem("guestStats"):', savedStats)
 
       if (savedStats) {
         const parsedStats = JSON.parse(savedStats)
-        console.log('✅ Loaded guestStats from localStorage:', parsedStats)
-        console.log('📊 Number of days:', parsedStats.length)
 
         // Force reactivity update
         stats.value = []
         await nextTick()
         stats.value = parsedStats
       } else {
-        console.log('⚠️ No guestStats in localStorage, generating mock data...')
         // Generiere Mock-Daten für die letzten 7 Tage
         const mockStats = generateMockStats()
-        console.log('✅ Generated mock stats:', mockStats)
         localStorage.setItem('guestStats', JSON.stringify(mockStats))
-        console.log('💾 Saved mock stats to localStorage')
 
         // Force reactivity update
         stats.value = []
@@ -199,10 +142,8 @@ async function loadStats() {
         stats.value = mockStats
       }
     } else {
-      console.log('👨 User Mode: Loading from API...')
       // Lade Intakes von API und berechne Statistiken
       const url = apiUrl(`/api/intakes/${user.value?.id}/recent?limit=100`)
-      console.log('📡 Fetching:', url)
 
       const res = await fetch(url, {
         headers: getAuthHeaders()
@@ -210,44 +151,25 @@ async function loadStats() {
 
       if (!res.ok) throw new Error('HTTP ' + res.status)
       const intakes: Intake[] = await res.json()
-      console.log('✅ Fetched intakes:', intakes)
-      console.log('📊 Number of intakes:', intakes.length)
 
       // Berechne Statistiken aus den Intakes
       const calculatedStats = calculateDailyStats(intakes, goalMl.value)
-      console.log('✅ Calculated daily stats:', calculatedStats)
 
       // Force reactivity update
       stats.value = []
       await nextTick()
       stats.value = calculatedStats
-
-      console.log('✅ Stats set to:', stats.value)
-      console.log('✅ Stats length:', stats.value.length)
     }
   } catch (e) {
     console.error('❌ Error loading stats:', e)
     error.value = String(e)
   } finally {
     loading.value = false
-    console.log('📥 Loading complete. stats.value:', stats.value)
-    console.log('📥 stats.value.length:', stats.value.length)
-
-    // Wait for DOM update
-    await nextTick()
-    console.log('📥 After nextTick. DOM should be updated.')
-    console.log('📥 ========================================')
   }
 }
 
 // Helper: Berechne tägliche Statistiken aus Intakes
 function calculateDailyStats(intakes: Intake[], goal: number): DayStats[] {
-  console.log('📊 ========================================')
-  console.log('📊 CALCULATING DAILY STATS')
-  console.log('📊 ========================================')
-  console.log('📊 Total intakes:', intakes.length)
-  console.log('📊 Goal:', goal)
-
   const today = new Date()
   const dailyStats: DayStats[] = []
 
@@ -266,12 +188,6 @@ function calculateDailyStats(intakes: Intake[], goal: number): DayStats[] {
     const consumedMl = dayIntakes.reduce((sum, intake) => sum + intake.volumeMl, 0)
     const percentage = Math.round((consumedMl / goal) * 100)
 
-    console.log(`  ${dateStr}:`, {
-      dayIntakes: dayIntakes.length,
-      consumedMl,
-      percentage: percentage + '%'
-    })
-
     dailyStats.push({
       date: dateStr,
       consumedMl,
@@ -279,9 +195,6 @@ function calculateDailyStats(intakes: Intake[], goal: number): DayStats[] {
       percentage
     })
   }
-
-  console.log('📊 Final daily stats:', dailyStats)
-  console.log('📊 ========================================')
 
   return dailyStats
 }

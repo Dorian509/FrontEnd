@@ -36,7 +36,6 @@ async function loadProfile() {
     if (isGuest.value) {
       // Lade aus LocalStorage für Gast-Modus
       const savedProfile = localStorage.getItem('guestProfile')
-      console.log('📥 Loading guest profile from LocalStorage:', savedProfile)
 
       if (savedProfile) {
         const guestProfile = JSON.parse(savedProfile)
@@ -44,10 +43,8 @@ async function loadProfile() {
         weightKg.value = Number(guestProfile.weightKg) || 70
         activityLevel.value = guestProfile.activityLevel || 'MEDIUM'
         climate.value = guestProfile.climate || 'NORMAL'
-        console.log('✅ Loaded profile:', { weightKg: weightKg.value, activityLevel: activityLevel.value, climate: climate.value })
       } else {
         // Default-Werte für neuen Gast
-        console.log('ℹ️ No saved profile, using defaults')
         weightKg.value = 70
         activityLevel.value = 'MEDIUM'
         climate.value = 'NORMAL'
@@ -59,13 +56,11 @@ async function loadProfile() {
       })
       if (!res.ok) throw new Error('HTTP ' + res.status)
       const loadedProfile = await res.json()
-      console.log('📥 Loaded profile from API:', loadedProfile)
 
       profile.value = loadedProfile
       weightKg.value = Number(loadedProfile.weightKg) || 70
       activityLevel.value = loadedProfile.activityLevel || 'MEDIUM'
       climate.value = loadedProfile.climate || 'NORMAL'
-      console.log('✅ Parsed profile:', { weightKg: weightKg.value, activityLevel: activityLevel.value, climate: climate.value })
     }
   } catch (e) {
     console.error('❌ Load profile error:', e)
@@ -82,8 +77,6 @@ async function saveProfile() {
   error.value = null
   successMessage.value = null
 
-  console.log('💾 Saving profile:', { weightKg: weightKg.value, activityLevel: activityLevel.value, climate: climate.value })
-
   try {
     // Validation
     const weight = Number(weightKg.value)
@@ -98,12 +91,7 @@ async function saveProfile() {
         activityLevel: activityLevel.value,
         climate: climate.value
       }
-      console.log('💾 Saving to LocalStorage:', guestProfile)
       localStorage.setItem('guestProfile', JSON.stringify(guestProfile))
-
-      // Verify
-      const saved = localStorage.getItem('guestProfile')
-      console.log('✅ Verified saved:', JSON.parse(saved || '{}'))
 
       // Aktualisiere auch das Hydration-Ziel
       const hydrationData = localStorage.getItem('guestHydrationData')
@@ -113,7 +101,6 @@ async function saveProfile() {
         data.goalMl = newGoal
         data.remainingMl = newGoal - (data.consumedMl || 0)
         localStorage.setItem('guestHydrationData', JSON.stringify(data))
-        console.log('✅ Updated hydration goal:', newGoal, 'ml')
       }
 
       successMessage.value = 'Einstellungen erfolgreich gespeichert!'
@@ -126,7 +113,6 @@ async function saveProfile() {
         climate: climate.value,
         timezone: profile.value?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
       }
-      console.log('📤 Sending to API:', body)
 
       const res = await fetch(apiUrl(`/api/profile/${user.value?.id}`), {
         method: 'PUT',
@@ -142,7 +128,6 @@ async function saveProfile() {
         throw new Error('Profil konnte nicht gespeichert werden')
       }
       const updated = await res.json()
-      console.log('✅ Saved to API successfully:', updated)
       profile.value = updated
       successMessage.value = 'Einstellungen erfolgreich gespeichert!'
       setTimeout(() => (successMessage.value = null), 3000)
@@ -161,7 +146,6 @@ function calcEstimatedGoal() {
 
     // Validation
     if (!weight || isNaN(weight) || weight < 20 || weight > 200) {
-      console.warn('⚠️ Invalid weight for calculation:', weightKg.value, '- using default 70kg')
       return 2500 // Default fallback
     }
 
@@ -177,15 +161,6 @@ function calcEstimatedGoal() {
     const total = baseGoal + activityBonus + climateBonus
     const rounded = Math.round(total / 50) * 50
 
-    console.log('🧮 Calculated goal:', {
-      weight,
-      baseGoal,
-      activityBonus,
-      climateBonus,
-      total,
-      rounded
-    })
-
     return rounded
   } catch (e) {
     console.error('❌ Goal calculation error:', e)
@@ -197,14 +172,10 @@ function calcEstimatedGoal() {
 const calculatedGoal = computed(() => calcEstimatedGoal())
 
 async function handleLogout() {
-  console.log('🚪 Logging out...')
-
   const result = logout()
 
   if (result.success) {
-    console.log('✅ Logout successful, redirecting to login...')
     await router.push('/login')
-    console.log('✅ Navigation to login complete')
   }
 }
 </script>

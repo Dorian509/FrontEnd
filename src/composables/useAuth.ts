@@ -50,7 +50,6 @@ export function useAuth() {
       const guestMode = localStorage.getItem(GUEST_MODE_KEY)
       if (guestMode === 'true') {
         isGuest.value = true
-        console.log('Guest mode active')
         return
       }
 
@@ -65,7 +64,6 @@ export function useAuth() {
       if (savedUser) {
         try {
           user.value = JSON.parse(savedUser)
-          console.log('User authenticated from localStorage:', user.value)
         } catch (parseError) {
           console.error('Failed to parse user data:', parseError)
           // Korrupte Daten löschen
@@ -83,15 +81,11 @@ export function useAuth() {
   // Login with email and password
   async function login(credentials: LoginCredentials) {
     try {
-      console.log('🔐 Attempting login...', credentials.email)
-
       const response = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
       })
-
-      console.log('📡 Response status:', response.status)
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
@@ -116,7 +110,6 @@ export function useAuth() {
       }
 
       const data = await response.json()
-      console.log('✅ Login successful')
 
       // Save to state
       token.value = data.token
@@ -128,21 +121,12 @@ export function useAuth() {
       localStorage.setItem(USER_KEY, JSON.stringify(data.user))
       localStorage.removeItem(GUEST_MODE_KEY)  // Wichtig: Gast-Modus entfernen!
 
-      console.log('🔐 Auth state updated:', {
-        hasToken: !!token.value,
-        hasUser: !!user.value,
-        isGuest: isGuest.value,
-        isAuthenticated: !!token.value && !!user.value && !isGuest.value
-      })
-
       // Migrate guest data if exists
       const guestData = collectGuestData()
       if (guestData && (guestData.hydration || guestData.history.length > 0)) {
         const migrationSuccess = await migrateGuestDataToBackend(data.token, guestData)
         if (migrationSuccess) {
           clearGuestData()
-        } else {
-          console.warn('⚠️ Migration failed, keeping guest data in LocalStorage as backup')
         }
       } else {
         clearGuestData()
@@ -162,8 +146,6 @@ export function useAuth() {
   // Register new user
   async function register(data: RegisterData) {
     try {
-      console.log('📝 Attempting registration...', data.email)
-
       // 1. Sammle Gast-Daten VOR der Registrierung
       const guestData = collectGuestData()
 
@@ -181,8 +163,6 @@ export function useAuth() {
           activityLevel: 'MEDIUM'
         })
       })
-
-      console.log('📡 Response status:', response.status)
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
@@ -207,7 +187,6 @@ export function useAuth() {
       }
 
       const responseData = await response.json()
-      console.log('✅ Registration successful')
 
       // 3. Speichere Auth in State
       token.value = responseData.token
@@ -219,13 +198,6 @@ export function useAuth() {
       localStorage.setItem(USER_KEY, JSON.stringify(responseData.user))
       localStorage.removeItem(GUEST_MODE_KEY)  // Wichtig: Gast-Modus entfernen!
 
-      console.log('🔐 Auth state updated after registration:', {
-        hasToken: !!token.value,
-        hasUser: !!user.value,
-        isGuest: isGuest.value,
-        isAuthenticated: !!token.value && !!user.value && !isGuest.value
-      })
-
       // 5. Migriere Gast-Daten falls vorhanden
       if (guestData && (guestData.hydration || guestData.history.length > 0)) {
         const migrationSuccess = await migrateGuestDataToBackend(responseData.token, guestData)
@@ -233,8 +205,6 @@ export function useAuth() {
         if (migrationSuccess) {
           // 6. Räume LocalStorage auf nach erfolgreicher Migration
           clearGuestData()
-        } else {
-          console.warn('⚠️ Migration failed, keeping guest data in LocalStorage as backup')
         }
       } else {
         // Keine Gast-Daten vorhanden, räume trotzdem auf
@@ -254,8 +224,6 @@ export function useAuth() {
 
   // Continue as Guest
   function continueAsGuest() {
-    console.log('🎭 Activating Guest Mode...')
-
     // Lösche bestehende Auth
     clearAuth()
 
@@ -284,17 +252,13 @@ export function useAuth() {
       localStorage.setItem(GUEST_HYDRATION_DATA_KEY, JSON.stringify(defaultHydrationData))
     }
 
-    console.log('✅ Guest Mode activated')
-
     // KEIN router.push() hier - Komponente macht die Navigation
     return { success: true }
   }
 
   // Logout
   function logout() {
-    console.log('🚪 Logging out - clearing auth state')
     clearAuth()
-    console.log('✅ Auth cleared successfully')
 
     // WICHTIG: Keine Navigation hier! (useRouter funktioniert nicht in Composables)
     // Die Komponente muss router.push('/login') aufrufen
@@ -349,7 +313,6 @@ export function useAuth() {
         return false
       }
 
-      console.log('✅ Guest data successfully migrated to backend')
       return true
     } catch (error) {
       console.error('Migration error:', error)
@@ -367,25 +330,16 @@ export function useAuth() {
     ]
 
     guestKeys.forEach(key => localStorage.removeItem(key))
-    console.log('🧹 Guest data cleared from LocalStorage')
   }
 
   // Upgrade Guest to User
   async function upgradeGuestToUser(credentials: RegisterData) {
     if (!isGuest.value) {
-      console.warn('Not in guest mode')
       return { success: false, error: 'Nicht im Gast-Modus' }
     }
 
-    // Info-Message für User
-    console.log('📦 Starting guest-to-user upgrade...')
-
     // Verwende die erweiterte register() Funktion
     const result = await register(credentials)
-
-    if (result.success && result.migrated) {
-      console.log('✅ Account created and guest data migrated!')
-    }
 
     return result
   }
