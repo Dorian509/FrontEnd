@@ -27,7 +27,6 @@ const loading = ref(false)
 
 function dismissBanner() {
   dismissed.value = true
-  // Optional: In LocalStorage speichern dass Banner dismissed wurde
   localStorage.setItem('guestBannerDismissed', 'true')
 }
 

@@ -366,7 +366,13 @@ function updateGuestStats(ml: number) {
   localStorage.setItem('guestStats', JSON.stringify(sortedStats))
 }
 
-function calculatePercentage(consumed: number, goal: number) {
+/**
+ * Berechnet den Prozentsatz der konsumierten Menge im Verhältnis zum Ziel
+ * @param consumed - Konsumierte Menge in ml
+ * @param goal - Ziel-Menge in ml
+ * @returns Prozentwert gerundet (max. 100%)
+ */
+function calculatePercentage(consumed: number, goal: number): number {
   if (!goal) return 0
   return Math.min(100, Math.round((consumed / goal) * 100))
 }
