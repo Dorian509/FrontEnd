@@ -58,7 +58,7 @@
 - **Löschen-Funktion**: Einzelne Einträge entfernen
 
 #### Einstellungen
-- **Profil-Anpassung**: Gewicht (30-200kg Slider)
+- **Profil-Anpassung**: Gewicht (30-300kg Slider)
 - **Aktivitätslevel**: Niedrig / Mittel (+250ml) / Hoch (+500ml)
 - **Klimabedingungen**: Normal / Heiß (+500ml)
 - **Ziel-Berechnung**: Automatisch basierend auf Profil
@@ -434,20 +434,7 @@ export const DEFAULTS = {
 }
 ```
 
-## Contributing
-
-Contributions sind willkommen! Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für Details.
-
-### Development Setup
-
-1. Fork das Repository
-2. Erstelle einen Feature Branch
-3. Mache deine Änderungen
-4. Schreibe/Update Tests
-5. Committe mit Conventional Commits
-6. Push und erstelle einen Pull Request
-
-### Code Style
+## Code Style
 
 - TypeScript Strict Mode
 - ESLint Rules befolgen

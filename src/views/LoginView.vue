@@ -53,22 +53,10 @@ async function handleSubmit() {
       })
     }
 
-    console.log('Auth result:', result)
-
     if (result.success) {
-      console.log('✅ Auth successful, navigating to dashboard...')
-
-      // DEBUG: Auth State vor Navigation prüfen
-      console.log('🔍 Auth state before navigation:', {
-        isAuthenticated: isAuthenticated.value,
-        hasToken: !!token.value,
-        hasUser: !!user.value
-      })
-
       // Navigation nach erfolgreichem Login/Register
       try {
         await router.push('/dashboard')
-        console.log('✅ Navigation complete')
       } catch (navError) {
         console.error('❌ Navigation failed:', navError)
         error.value = 'Navigation fehlgeschlagen'
