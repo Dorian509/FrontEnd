@@ -1,5 +1,4 @@
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
 import type { GuestDataExport } from '@/types/guest'
 import type { User, LoginCredentials, RegisterData } from '@/types'
 import { apiUrl } from '@/utils/api'
