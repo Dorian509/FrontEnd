@@ -21,6 +21,9 @@ const isAdding = ref(false)
 const isWakingUp = ref(false)
 const intakeHistory = ref<IntakeEntry[]>([])
 
+// Retry delays
+const SILENT_RETRY_DELAY = 2000 // 2 seconds for background retries
+
 // Goal Celebration State
 const celebrateGoal = ref(false)
 const hasShownCelebration = ref(false)
@@ -147,7 +150,6 @@ async function loadSilently() {
     }
 
     const url = apiUrl(`/api/hydration/today/${user.value?.id || userId.value}`)
-    const SILENT_RETRY_DELAY = 2000
     const response = await fetchWithRetry(url, {
       headers: getAuthHeaders()
     }, 3, SILENT_RETRY_DELAY) // Fewer retries for silent reload
