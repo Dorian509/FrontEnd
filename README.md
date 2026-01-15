@@ -2,9 +2,9 @@
 
 > Dein persönlicher Trink-Tracker 
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-0.0.0-blue)
 ![Vue](https://img.shields.io/badge/Vue-3.5-42b883)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Frontend Tests](https://github.com/Dorian509/FrontEnd/workflows/Frontend%20CI/badge.svg)
 
@@ -46,7 +46,7 @@
 - **Profil-Übersicht**: Gewicht, Aktivität, Ziel
 
 #### Statistiken
-- **7-Tage Chart**: Visualisierung mit Chart.js
+- **7-Tage Chart**: Custom Bar-Chart Visualisierung
 - **Durchschnittswerte**: Konsum und Zielerreichung
 - **Erfolgsrate**: Prozentsatz erreichter Tage
 - **Gesamt-Statistiken**: Lifetime Tracking
@@ -74,12 +74,13 @@
 
 ### Frontend
 - **Framework**: Vue 3.5 (Composition API)
-- **Language**: TypeScript 5.6 (Strict Mode)
-- **Styling**: Tailwind CSS 4.0
-- **Icons**: Font Awesome 6
+- **Language**: TypeScript 5.9 (Strict Mode)
+- **Styling**: Tailwind CSS 4.1
+- **Icons**: Font Awesome 7.1
 - **Build Tool**: Vite 7.1
 - **Router**: Vue Router 4
-- **Charts**: Chart.js 4
+- **State**: Pinia 3.0 (installiert, aktuell ungenutzt)
+- **Testing**: Vitest 4.0
 - **HTTP**: Native Fetch API
 
 ### Backend
@@ -230,11 +231,12 @@ http://localhost:5173
 ```
 Frontend/
 ├── src/
-│   ├── assets/              # CSS, Bilder
+│   ├── assets/              # Statische Assets
 │   │   ├── base.css         # Base Styles
-│   │   └── style.css        # Global Styles
+│   │   └── logo.svg         # Logo
 │   ├── components/          # Vue Komponenten
-│   │   └── GuestBanner.vue  # Gast-Modus Info Banner
+│   │   ├── GuestBanner.vue  # Gast-Modus Info Banner
+│   │   └── __tests__/       # Component Tests
 │   ├── composables/         # Vue Composables
 │   │   └── useAuth.ts       # Authentication Logic
 │   ├── constants/           # App-Konstanten
@@ -245,6 +247,7 @@ Frontend/
 │   │   └── ProfileSetup.vue # Profil-Setup
 │   ├── router/              # Vue Router
 │   │   └── index.ts         # Route Definitions
+│   ├── test/                # Test Setup & Utilities
 │   ├── types/               # TypeScript Types
 │   │   ├── index.ts         # Zentrale Types
 │   │   └── guest.ts         # Gast-spezifische Types
@@ -258,11 +261,14 @@ Frontend/
 │   │   ├── HistoryView.vue  # Verlauf-Seite
 │   │   └── StatisticsView.vue # Statistik-Seite
 │   ├── App.vue              # Root Component
-│   └── main.ts              # App Entry Point
+│   ├── main.ts              # App Entry Point
+│   ├── style.css            # Global Styles
+│   └── vite-env.d.ts        # Vite Type Declarations
 ├── public/                  # Static Assets
 ├── .env.example             # Example Environment
 ├── package.json             # Dependencies
 ├── vite.config.ts           # Vite Configuration
+├── vitest.config.ts         # Vitest Test Configuration
 ├── tailwind.config.js       # Tailwind Configuration
 ├── tsconfig.json            # TypeScript Config
 └── README.md                # Diese Datei
@@ -446,8 +452,8 @@ export const DEFAULTS = {
 
 - **Icons**: [Font Awesome](https://fontawesome.com)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com)
-- **Charts**: [Chart.js](https://www.chartjs.org)
 - **Framework**: [Vue.js](https://vuejs.org)
+- **Testing**: [Vitest](https://vitest.dev)
 
 ## Support
 
