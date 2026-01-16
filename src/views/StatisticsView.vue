@@ -448,11 +448,6 @@ function formatDateLong(dateString: string): string {
                         <p class="text-gray-400">{{ day.percentage }}% vom Ziel</p>
                       </div>
                     </div>
-
-                    <!-- Percentage on bar -->
-                    <div class="absolute top-2 left-1/2 transform -translate-x-1/2 text-xs font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                      {{ day.percentage }}%
-                    </div>
                   </div>
                 </div>
 
